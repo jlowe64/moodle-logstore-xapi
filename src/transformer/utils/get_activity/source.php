@@ -32,6 +32,7 @@ namespace src\transformer\utils\get_activity;
  * @param array $config The transformer config settings.
  * @return array
  */
+
 function source(array $config) {
     return [
         'id' => $config['source_url'],
@@ -39,6 +40,9 @@ function source(array $config) {
             'type' => 'http://id.tincanapi.com/activitytype/source',
             'name' => [
                 $config['source_lang'] => $config['source_name'],
+            ],
+            'description' => [
+                $config['source_lang'] => '',
             ],
         ],
     ];

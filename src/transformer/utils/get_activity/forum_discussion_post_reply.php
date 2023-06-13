@@ -26,18 +26,26 @@
 
 namespace src\transformer\utils\get_activity;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
  * Transformer utility for retrieving (forum discussion post reply) activities.
  *
  * @param array $config The transformer config settings.
- * @param \stdClass $post The forum post object.
+ * @param int $postid The id of the post.
  * @return string
  */
-function forum_discussion_post_reply(array $config, \stdClass $post) {
-    $repo = $config['repo'];
-    $actualreply = $repo->read_record_by_id('forum_posts', $post->id);
+function forum_discussion_post_reply(array $config, int $postid): string {
 
-    return utils\get_string_html_removed($actualreply->message);
+    try {
+        $repo = $config['repo'];
+        $post = $repo->read_record_by_id('forum_posts', $postid);
+
+        return utils\get_string_html_removed($post->message);
+
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        return 'post id ' . $postid;
+    }
 }

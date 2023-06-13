@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_quiz\question_answered;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -38,14 +39,27 @@ use src\transformer\utils as utils;
  * @return array
  */
 function multichoice(array $config, \stdClass $event, \stdClass $questionattempt, \stdClass $question) {
+
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->relateduserid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $attempt = $repo->read_record('quiz_attempts', ['uniqueid' => $questionattempt->questionusageid]);
-    $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
-    $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
+    $userid = $event->relateduserid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
     $lang = utils\get_course_lang($course);
-    $selections = explode('; ', utils\get_string_html_removed($questionattempt->responsesummary));
+    $cmid = $event->contextinstanceid;
+    $attemptid = $event->objectid;
+    $responsesummary = is_null($questionattempt->responsesummary) ? '' : $questionattempt->responsesummary;
+    $selections = explode('; ', utils\get_string_html_removed($responsesummary));
+    $rightanswer = is_null($questionattempt->rightanswer) ? '' : $questionattempt->rightanswer;
+    $questionid = is_null($question->id) ? 0 : $question->id;
+
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [
@@ -55,17 +69,16 @@ function multichoice(array $config, \stdClass $event, \stdClass $questionattempt
             ],
         ],
         'object' => [
-            'id' => utils\get_quiz_question_id($config, $coursemodule->id, $question->id),
+            'id' => utils\get_quiz_question_id($config, $cmid, $questionid),
             'definition' => utils\get_multichoice_definition($config, $questionattempt, $question, $lang),
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
             'response' => implode ('[,]', $selections),
-            'success' => $questionattempt->rightanswer == $questionattempt->responsesummary,
-            'completion' => $questionattempt->responsesummary !== '',
+            'success' => $rightanswer == $responsesummary,
+            'completion' => $responsesummary !== '',
             'extensions' => [
-                'http://learninglocker.net/xapi/cmi/choice/response' =>
-                    utils\get_string_html_removed($questionattempt->responsesummary),
+                'http://learninglocker.net/xapi/cmi/choice/response' => $responsesummary,
             ],
         ],
         'context' => [
@@ -76,8 +89,8 @@ function multichoice(array $config, \stdClass $event, \stdClass $questionattempt
                 'grouping' => [
                     utils\get_activity\site($config),
                     utils\get_activity\course($config, $course),
-                    utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
-                    utils\get_activity\quiz_attempt($config, $attempt->id, $coursemodule->id),
+                    utils\get_activity\course_quiz($config, $course, $cmid),
+                    utils\get_activity\quiz_attempt($config, $attemptid, $cmid),
                 ],
                 'category' => [
                     utils\get_activity\source($config),

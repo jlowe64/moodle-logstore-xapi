@@ -122,6 +122,22 @@ function get_verb(string $verb, array $config, string $lang) {
                 ],
             ];
             break;
+        case 'reviewed':
+            $output = [
+                'id' => 'http://id.tincanapi.com/verb/reviewed',
+                'display' => [
+                    $lang => 'reviewed'
+                ],
+            ];
+            break;
+        case 'deleted':
+            $output = [
+                'id' => 'http://activitystrea.ms/schema/1.0/delete',
+                'display' => [
+                    $lang => 'deleted'
+                ],
+            ];
+            break;
 
         default:
             break;

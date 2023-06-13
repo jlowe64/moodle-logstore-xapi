@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_assign;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,14 +38,21 @@ use src\transformer\utils as utils;
  */
 function assignment_submitted(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $assignmentsubmission = $repo->read_record_by_id('assign_submission', $event->objectid);
-    $assignment = $repo->read_record_by_id('assign', $assignmentsubmission->assignment);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $objectid = $event->objectid;
+    $objecttable = $event->objecttable;
     $lang = utils\get_course_lang($course);
-
     $verb = utils\get_verb('submitted', $config, $lang);
-
     if (utils\is_enabled_config($config, 'send_jisc_data')) {
         $verb = utils\get_verb('completed', $config, $lang);
     }
@@ -52,7 +60,7 @@ function assignment_submitted(array $config, \stdClass $event) {
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => $verb,
-        'object' => utils\get_activity\course_assignment($config, $event->contextinstanceid, $assignment->name, $lang),
+        'object' => utils\get_activity\course_assignment($config, $lang, $event->contextinstanceid, $objectid, $objecttable, null),
         'timestamp' => utils\get_event_timestamp($event),
         'context' => [
             'platform' => $config['source_name'],

@@ -58,7 +58,7 @@ class MoodleRepository extends Repository {
      * @param string $type The name of the table to retrieve from.
      * @param array $query Any additional conditions to add to the query.
      * @throws \Exception if the record was not found
-     * @return PhpObj
+     * @return \stdClass
      */
     public function read_record(string $type, array $query) {
         $record = $this->store->get_record($type, $query);

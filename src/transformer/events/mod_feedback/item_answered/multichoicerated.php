@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_feedback\item_answered;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -39,9 +40,17 @@ use src\transformer\utils as utils;
  */
 function multichoicerated(array $config, \stdClass $event, \stdClass $feedbackvalue, \stdClass $feedbackitem) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $feedback = $repo->read_record_by_id('feedback', $feedbackitem->feedback);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
     $lang = utils\get_course_lang($course);
     $presentedchoices = explode("|", substr($feedbackitem->presentation, 6));
     $choices = array_map(function ($presentation, $id) {
@@ -54,7 +63,9 @@ function multichoicerated(array $config, \stdClass $event, \stdClass $feedbackva
             'id' => $id,
         ];
     }, $presentedchoices, array_keys($presentedchoices));
-    $selectedchoice = $choices[intval($feedbackvalue->value) - 1];
+    $selectedchoice = is_null($choices[intval($feedbackvalue->value) - 1]) ? '' : $choices[intval($feedbackvalue->value) - 1];
+    $name = is_null($selectedchoice->name) ? '' : $selectedchoice->name;
+    $rating = is_null($selectedchoice->rating) ? '' : $selectedchoice->rating;
 
     return [[
         'actor' => utils\get_user($config, $user),
@@ -76,11 +87,11 @@ function multichoicerated(array $config, \stdClass $event, \stdClass $feedbackva
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => $selectedchoice->name,
+            'response' => $name,
             'completion' => $feedbackvalue->value !== '',
             'extensions' => [
-                'http://learninglocker.net/xapi/moodle/feedback_item_rating' => $selectedchoice->rating,
-                'http://learninglocker.net/xapi/cmi/choice/response' => $selectedchoice->name,
+                'http://learninglocker.net/xapi/moodle/feedback_item_rating' => $rating,
+                'http://learninglocker.net/xapi/cmi/choice/response' => $name,
             ],
         ],
         'context' => [

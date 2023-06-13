@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_book;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,9 +38,19 @@ use src\transformer\utils as utils;
  */
 function chapter_viewed(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $chapter = $repo->read_record_by_id('book_chapters', $event->objectid);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $chapterid = $event->objectid;
+    $cmid = $event->contextinstanceid;
     $lang = utils\get_course_lang($course);
 
     $statement = [
@@ -50,7 +61,7 @@ function chapter_viewed(array $config, \stdClass $event) {
                 $lang => 'viewed'
             ]
         ],
-        'object' => utils\get_activity\book_chapter($config, $course, $chapter, $event->contextinstanceid),
+        'object' => utils\get_activity\book_chapter($config, $course, $chapterid, $cmid),
         'timestamp' => utils\get_event_timestamp($event),
         'context' => [
             'platform' => $config['source_name'],
@@ -63,7 +74,7 @@ function chapter_viewed(array $config, \stdClass $event) {
                     utils\get_activity\course_module(
                         $config,
                         $course,
-                        $event->contextinstanceid,
+                        $cmid,
                         'http://id.tincanapi.com/activitytype/book'
                     )
                 ],
@@ -74,11 +85,17 @@ function chapter_viewed(array $config, \stdClass $event) {
         ]
     ];
 
-    if ($chapter->subchapter != '0') {
-        $parentchapter = $repo->read_record_by_id('book_chapters', $chapter->subchapter);
-        $statement['context']['contextActivities']['parent'] = [
-            utils\get_activity\book_chapter($config, $course, $parentchapter, $event->contextinstanceid)
-        ];
+    try {
+        $chapter = $repo->read_record_by_id('book_chapters', $chapterid);
+
+        if ($chapter->subchapter != '0') {
+            $parentchapterid = $chapter->subchapter;
+            $statement['context']['contextActivities']['parent'] = [
+                utils\get_activity\book_chapter($config, $course, $parentchapterid, $cmid)
+            ];
+        }
+    } catch (Exception $e) {
+        unset($e);
     }
 
     return [$statement];

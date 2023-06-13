@@ -36,18 +36,22 @@ use src\transformer\utils as utils;
  * @return array
  */
 function course(array $config, \stdClass $course) {
-    $coursename = $course->fullname ? $course->fullname : 'A Moodle course';
+    $coursename = property_exists($course, 'fullname') ? $course->fullname : 'A Moodle course';
     $courselang = utils\get_course_lang($course);
+    $description = utils\get_string_html_removed($course->summary);
 
     $object = [
-                  'id' => $config['app_url'].'/course/view.php?id='.$course->id,
-                  'definition' => [
-                      'type' => 'http://id.tincanapi.com/activitytype/lms/course',
-                      'name' => [
-                          $courselang => $coursename,
-                      ],
-                  ],
-              ];
+          'id' => $config['app_url'].'/course/view.php?id='.$course->id,
+          'definition' => [
+              'type' => 'http://id.tincanapi.com/activitytype/lms/course',
+              'name' => [
+                  $courselang => $coursename,
+              ],
+              'description' => [
+                  $courselang => $description,
+              ],
+          ],
+      ];
 
     if (utils\is_enabled_config($config, 'send_short_course_id')) {
         $lmsshortid = 'https://w3id.org/learning-analytics/learning-management-system/short-id';

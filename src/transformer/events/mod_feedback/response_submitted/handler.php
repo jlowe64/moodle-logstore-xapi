@@ -26,7 +26,7 @@
 
 namespace src\transformer\events\mod_feedback\response_submitted;
 
-use src\transformer\utils as utils;
+use Exception;
 use src\transformer\events\mod_feedback\item_answered as item_answered;
 
 /**
@@ -37,15 +37,21 @@ use src\transformer\events\mod_feedback\item_answered as item_answered;
  * @return array
  */
 function handler(array $config, \stdClass $event) {
-    $repo = $config['repo'];
-    $feedbackvalues = $repo->read_records('feedback_value', [
-        'completed' => $event->objectid
-    ]);
 
-    return array_merge(
-        response_submitted($config, $event),
-        array_reduce($feedbackvalues, function ($result, $feedbackvalue) use ($config, $event) {
-            return array_merge($result, item_answered\handler($config, $event, $feedbackvalue));
-        }, [])
-    );
+    try {
+        $repo = $config['repo'];
+        $feedbackvalues = $repo->read_records('feedback_value', [
+            'completed' => $event->objectid
+        ]);
+
+        return array_merge(
+            response_submitted($config, $event),
+            array_reduce($feedbackvalues, function($result, $feedbackvalue) use ($config, $event) {
+                return array_merge($result, item_answered\handler($config, $event, $feedbackvalue));
+            }, [])
+        );
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        return response_submitted($config, $event);
+    }
 }

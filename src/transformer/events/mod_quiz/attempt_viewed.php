@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_quiz;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,15 +38,25 @@ use src\transformer\utils as utils;
  */
 function attempt_viewed(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $attemptid = $event->objectid;
+    $cmid = $event->contextinstanceid;
     $lang = utils\get_course_lang($course);
-
-    $object = utils\get_activity\quiz_attempt($config, $event->id, $event->contextinstanceid);
+    $object = utils\get_activity\quiz_attempt($config, $attemptid, $cmid);
 
     // JISC specific activity type.
     if (utils\is_enabled_config($config, 'send_jisc_data')) {
-        $object = utils\get_activity\course_quiz($config, $course, $event->contextinstanceid);
+        $object = utils\get_activity\course_quiz($config, $course, $cmid);
     }
 
     return [[
@@ -61,7 +72,7 @@ function attempt_viewed(array $config, \stdClass $event) {
                 'grouping' => [
                     utils\get_activity\site($config),
                     utils\get_activity\course($config, $course),
-                    utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
+                    utils\get_activity\course_quiz($config, $course, $cmid),
                 ],
                 'category' => [
                     utils\get_activity\source($config),

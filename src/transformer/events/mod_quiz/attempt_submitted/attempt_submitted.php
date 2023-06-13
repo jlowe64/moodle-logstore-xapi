@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_quiz\attempt_submitted;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -35,40 +36,72 @@ use src\transformer\utils as utils;
  * @param \stdClass $event The event to be transformed.
  * @return array
  */
-function attempt_submitted(array $config, \stdClass $event) {
+
+function attempt_submitted(array $config, \stdClass $event): array {
+
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->relateduserid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $attempt = $repo->read_record_by_id('quiz_attempts', $event->objectid);
-    $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
-    $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
-    $gradeitem = $repo->read_record('grade_items', [
-        'itemmodule' => 'quiz',
-        'iteminstance' => $quiz->id,
-    ]);
-    $attemptgrade = $repo->read_record('grade_grades', [
-        'itemid' => $gradeitem->id,
-        'userid' => $event->relateduserid
-    ]);
+    $userid = $event->relateduserid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
     $lang = utils\get_course_lang($course);
+    $other = unserialize($event->other);
+    if (!$other) {
+        $other = json_decode($event->other);
+        $quizid = (int)$other->quizid;
+    } else {
+        $quizid = $other['quizid'];
+    }
+
+    try {
+        $attempt = $repo->read_record_by_id('quiz_attempts', $event->objectid);
+        $gradeitem = $repo->read_record('grade_items', [
+            'itemmodule' => 'quiz',
+            'iteminstance' => $quizid,
+        ]);
+        $attemptgrade = $repo->read_record('grade_grades', [
+            'itemid' => $gradeitem->id,
+            'userid' => $event->relateduserid
+        ]);
+
+        $result = utils\get_attempt_result($attempt, $gradeitem, $attemptgrade);
+
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $result = [
+            'score' => [
+                'raw' => 0.0,
+                'min' => 0.0,
+                'max' => 0.0,
+                'scaled' => 0.0,
+            ],
+            'completion' => false,
+            'success' => false,
+        ];
+    }
 
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => utils\get_verb('completed', $config, $lang),
-        'object' => utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
+        'object' => utils\get_activity\quiz_attempt($config, $event->objectid, $event->contextinstanceid),
         'timestamp' => utils\get_event_timestamp($event),
-        'result' => utils\get_attempt_result($config, $attempt, $gradeitem, $attemptgrade),
+        'result' => $result,
         'context' => [
             'platform' => $config['source_name'],
             'language' => $lang,
             'extensions' => utils\extensions\base($config, $event, $course),
             'contextActivities' => [
-                'other' => [
-                    utils\get_activity\quiz_attempt($config, $attempt->id, $coursemodule->id),
-                ],
                 'grouping' => [
                     utils\get_activity\site($config),
                     utils\get_activity\course($config, $course),
+                    utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
                 ],
                 'category' => [
                     utils\get_activity\source($config),

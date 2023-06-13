@@ -37,7 +37,11 @@ use src\transformer\utils as utils;
  */
 function user_loggedout(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
     $lang = $config['source_lang'];
 
     return [[

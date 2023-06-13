@@ -39,22 +39,33 @@ use src\transformer\utils as utils;
  */
 function user_report(array $config, \stdClass $user, \stdClass $course, string $courselang) {
 
+    $fullname = utils\get_full_name($user);
+    $userid = $user->id;
+
+    if (array_key_exists('send_pseudo', $config) && $config['send_pseudo']) {
+        $fullname = sha1($fullname);
+        $userid = sha1($userid);
+    }
+
     $activity = [
         'definition' => [
             'type' => 'http://id.tincanapi.com/activitytype/user-profile',
             'name' => [
-                $courselang => 'forum posts of '.utils\get_full_name($user),
+                $courselang => 'forum posts of '.$fullname,
+            ],
+            'description' => [
+                $courselang => 'The report of the posts created by the actor',
             ],
             'extensions' => [
-                'https://moodle.org/xapi/extensions/user_id' => $user->id,
+                'https://moodle.org/xapi/extensions/user_id' => $userid,
             ],
         ],
     ];
 
-    if ($course->id == "0") {
-        $activity['id'] = $config['app_url'].'/mod/forum/user.php?id='.$user->id;
+    if ($course->id == '0') {
+        $activity['id'] = $config['app_url'].'/mod/forum/user.php?id='.$userid;
     } else {
-        $activity['id'] = $config['app_url'].'/mod/forum/user.php?id='.$user->id.'&course='.$course->id;
+        $activity['id'] = $config['app_url'].'/mod/forum/user.php?id='.$userid.'&course='.$course->id;
         $activity['definition']['extensions']['https://moodle.org/xapi/extensions/course_id'] = $course->id;
     }
 

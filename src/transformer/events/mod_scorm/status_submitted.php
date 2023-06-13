@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_scorm;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,24 +38,44 @@ use src\transformer\utils as utils;
  */
 function status_submitted(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $scorm = $repo->read_record_by_id('scorm', $event->objectid);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $scormid = $event->objectid;
+    $cmid = $event->contextinstanceid;
     $lang = utils\get_course_lang($course);
-
-    $unserializedcmi = unserialize($event->other);
-    $attempt = $unserializedcmi['attemptid'];
-    $scormscoestracks = $repo->read_records('scorm_scoes_track', [
-        'userid' => $user->id,
-        'scormid' => $event->objectid,
-        'scoid' => $event->contextinstanceid,
-        'attempt' => $unserializedcmi['attemptid']
-    ]);
+    $other = unserialize($event->other);
+    if (!$other) {
+        $other = json_decode($event->other);
+        $attempt = $other->attemptid;
+    } else {
+        $attempt = $other['attemptid'];
+    }
+    try {
+        $scormscoestracks = $repo->read_records('scorm_scoes_track', [
+            'userid' => $user->id,
+            'scormid' => $scormid,
+            'scoid' => $cmid,
+            'attempt' => $attempt
+        ]);
+        $verb = utils\get_scorm_verb($scormscoestracks, $lang);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $verb = utils\get_verb('deleted', $config, $lang);
+    }
 
     return [[
         'actor' => utils\get_user($config, $user),
-        'verb' => utils\get_scorm_verb($scormscoestracks, $lang),
-        'object' => utils\get_activity\course_scorm($config, $event->contextinstanceid, $scorm, $lang),
+        'verb' => $verb,
+        'object' => utils\get_activity\course_scorm($config, $cmid, $scormid, $lang),
         'timestamp' => utils\get_event_timestamp($event),
         'context' => [
             'platform' => $config['source_name'],

@@ -37,7 +37,11 @@ use src\transformer\utils as utils;
  */
 function program_assigned(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
     $program = $repo->read_record_by_id('prog', $event->objectid);
     $lang = $config['source_lang'];
 

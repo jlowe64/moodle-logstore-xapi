@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_feedback\item_answered;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -39,10 +40,19 @@ use src\transformer\utils as utils;
  */
 function textfield(array $config, \stdClass $event, \stdClass $feedbackvalue, \stdClass $feedbackitem) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $feedback = $repo->read_record_by_id('feedback', $feedbackitem->feedback);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
     $lang = utils\get_course_lang($course);
+    $response = is_null($feedbackvalue->value) ? '' : $feedbackvalue->value;
 
     return [[
         'actor' => utils\get_user($config, $user),
@@ -64,8 +74,8 @@ function textfield(array $config, \stdClass $event, \stdClass $feedbackvalue, \s
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => $feedbackvalue->value,
-            'completion' => $feedbackvalue->value !== '',
+            'response' => $response,
+            'completion' => $response !== '',
         ],
         'context' => [
             'platform' => $config['source_name'],

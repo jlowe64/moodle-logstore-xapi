@@ -26,26 +26,45 @@
 
 namespace src\transformer\utils\get_activity;
 
-use src\transformer\utils as utils;
+use Exception;
 
 /**
  * Transformer utility for retrieving (SCORM) activities.
  *
  * @param array $config The transformer config settings.
  * @param string $cmid The id of the context.
- * @param \stdClass $scorm The SCORM object.
+ * @param int $scormid The id of the SCORM.
  * @param string $lang The language of the SCORM activity.
  * @return array
  */
-function course_scorm(array $config, string $cmid, \stdClass $scorm, string $lang) {
-    $scormname = property_exists($scorm, 'name') ? $scorm->name : 'Scorm';
+function course_scorm(array $config, string $cmid, int $scormid, string $lang): array {
+
+    try {
+        $repo = $config['repo'];
+        $scorm = $repo->read_record_by_id('scorm', $scormid);
+        $name = property_exists($scorm, 'name') ? $scorm->name : 'Scorm';
+        $coursemodule = $repo->read_record_by_id('course_modules', $cmid);
+        $status = $coursemodule->deletioninprogress;
+        if ($status == 0) {
+            $description = 'the scorm activity';
+        } else {
+            $description = 'deletion in progress';
+        }
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $name = 'scorm id ' . $scormid;
+        $description = 'deleted';
+    }
 
     return [
         'id' => $config['app_url'].'/mod/scorm/view.php?id='.$cmid,
         'definition' => [
             'type' => 'http://id.tincanapi.com/activitytype/legacy-learning-standard',
             'name' => [
-                $lang => $scormname,
+                $lang => $name,
+            ],
+            'description' => [
+                $lang => $description,
             ],
         ],
     ];

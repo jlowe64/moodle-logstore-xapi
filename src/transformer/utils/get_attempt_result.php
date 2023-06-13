@@ -29,13 +29,13 @@ namespace src\transformer\utils;
 /**
  * Transformer utility to determine the attempt result.
  *
- * @param array $config The transformer config settings.
  * @param \stdClass $attempt The attempt object.
  * @param \stdClass $gradeitem The grade item object.
  * @param \stdClass $attemptgrade The attemptgrade object.
  * @return array
  */
-function get_attempt_result(array $config, \stdClass $attempt, \stdClass $gradeitem, \stdClass $attemptgrade) {
+function get_attempt_result(\stdClass $attempt, \stdClass $gradeitem, \stdClass $attemptgrade) {
+
     $gradesum = floatval(isset($attemptgrade->rawgrade) ? $attemptgrade->rawgrade : 0);
 
     $minscore = floatval($gradeitem->grademin ?: 0);

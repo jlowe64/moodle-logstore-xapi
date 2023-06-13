@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\core;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,8 +38,22 @@ use src\transformer\utils as utils;
  */
 function user_enrolment_created(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->relateduserid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
+    $userid = $event->relateduserid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $instructorid = $event->userid;
+    if ($instructorid < 2) {
+        $instructorid = 1;
+    }
+    $instructor = $repo->read_record_by_id('user', $instructorid);
     $lang = utils\get_course_lang($course);
 
     return[[
@@ -53,6 +68,7 @@ function user_enrolment_created(array $config, \stdClass $event) {
         'timestamp' => utils\get_event_timestamp($event),
         'context' => [
             'platform' => $config['source_name'],
+            'instructor' => utils\get_user($config, $instructor),
             'language' => $lang,
             'extensions' => utils\extensions\base($config, $event, $course),
             'contextActivities' => [

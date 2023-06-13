@@ -26,30 +26,63 @@
 
 namespace src\transformer\utils\get_activity;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
  * Transformer utility for retrieving (course assignment) activities.
  *
  * @param array $config The transformer config settings.
- * @param string $cmid The id of the context.
- * @param string $name The name of the assignment.
  * @param string $lang The language of the assignment.
+ * @param int $cmid The id of the context.
+ * @param int|null $objectid The id of the object.
+ * @param string|null $objectable The table where to read data.
+ * @param int|null $assignid The id of the assignment.
  * @return array
  */
-function course_assignment(array $config, string $cmid, string $name, string $lang) {
+
+function course_assignment(array $config, string $lang, int $cmid, int $objectid=null, string $objectable=null,
+    int $assignid=null): array {
+
+    $repo = $config['repo'];
+
+    try {
+        if (is_null($assignid)) {
+            $assignmentrecord = $repo->read_record_by_id(strval($objectable), $objectid);
+            $assignment = $repo->read_record_by_id('assign', $assignmentrecord->assignment);
+        } else {
+            $assignment = $repo->read_record_by_id('assign', $assignid);
+        }
+        $name = property_exists($assignment, 'name') ? $assignment->name : 'Assignment';
+        $coursemodule = $repo->read_record_by_id('course_modules', $cmid);
+        $status = $coursemodule->deletioninprogress;
+        if ($status == 0) {
+            $description = 'the assignment activity';
+        } else {
+            $description = 'deletion in progress';
+        }
+
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $name = 'assignment';
+        $description = 'deleted';
+    }
+
     $object = [
         'id' => $config['app_url'] . '/mod/assign/view.php?id=' . $cmid,
         'definition' => [
-            'type' => 'http://adlnet.gov/expapi/activities/assessment',
+            'type' => 'http://vocab.xapi.fr/activities/assignment',
             'name' => [
                 $lang => $name,
+            ],
+            'description' => [
+                $lang => $description,
             ],
         ],
     ];
 
     if (utils\is_enabled_config($config, 'send_jisc_data')) {
-        $repo = $config['repo'];
+
         $coursemodule = $repo->read_record_by_id('course_modules', $cmid);
         $course = $repo->read_record_by_id('course', $coursemodule->course);
 

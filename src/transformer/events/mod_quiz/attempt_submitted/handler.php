@@ -26,7 +26,7 @@
 
 namespace src\transformer\events\mod_quiz\attempt_submitted;
 
-use src\transformer\utils as utils;
+use Exception;
 use src\transformer\events\mod_quiz\question_answered as question_answered;
 
 /**
@@ -37,15 +37,20 @@ use src\transformer\events\mod_quiz\question_answered as question_answered;
  * @return array
  */
 function handler(array $config, \stdClass $event) {
-    $repo = $config['repo'];
-    $quizattempt = $repo->read_record_by_id('quiz_attempts', $event->objectid);
-    // Other two look ups should be returning one record, This one should return all questions attempted.
-    $questionattempts = $repo->read_records('question_attempts', ['questionusageid' => $quizattempt->uniqueid]);
 
-    return array_merge(
-        attempt_submitted($config, $event),
-        array_reduce($questionattempts, function ($result, $questionattempt) use ($config, $event) {
-            return array_merge($result, question_answered\handler($config, $event, $questionattempt));
-        }, [])
-    );
+    try {
+        $repo = $config['repo'];
+        $quizattempt = $repo->read_record_by_id('quiz_attempts', $event->objectid);
+        // Other two look ups should be returning one record, This one should return all questions attempted.
+        $questionattempts = $repo->read_records('question_attempts', ['questionusageid' => $quizattempt->uniqueid]);
+
+        return array_merge(
+            attempt_submitted($config, $event),
+            array_reduce($questionattempts, function($result, $questionattempt) use ($config, $event) {
+                return array_merge($result, question_answered\handler($config, $event, $questionattempt));
+            }, [])
+        );
+    } catch (Exception $e) {
+        return attempt_submitted($config, $event);
+    }
 }

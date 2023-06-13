@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_feedback\response_submitted;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -35,13 +36,23 @@ use src\transformer\utils as utils;
  * @param \stdClass $event The event to be transformed.
  * @return array
  */
-function response_submitted(array $config, \stdClass $event) {
+function response_submitted(array $config, \stdClass $event): array {
+
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
+    $userid = $event->relateduserid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
     $lang = utils\get_course_lang($course);
-    $feedbackcompleted = $repo->read_record_by_id('feedback_completed', $event->objectid);
-    $feedback = $repo->read_record_by_id('feedback', $feedbackcompleted->feedback);
+    $responseid = $event->objectid;
+    $anonymous = $event->anonymous;
 
     return [[
         'actor' => utils\get_user($config, $user),
@@ -51,7 +62,7 @@ function response_submitted(array $config, \stdClass $event) {
                 $lang => 'submitted'
             ],
         ],
-        'object' => utils\get_activity\course_feedback($config, $course, $event->contextinstanceid),
+        'object' => utils\get_activity\feedback_response($config, $responseid, $event->contextinstanceid, $anonymous, $user, $lang),
         'timestamp' => utils\get_event_timestamp($event),
         'context' => [
             'platform' => $config['source_name'],
@@ -61,6 +72,7 @@ function response_submitted(array $config, \stdClass $event) {
                 'grouping' => [
                     utils\get_activity\site($config),
                     utils\get_activity\course($config, $course),
+                    utils\get_activity\course_feedback($config, $course, $event->contextinstanceid)
                 ],
                 'category' => [
                     utils\get_activity\source($config),

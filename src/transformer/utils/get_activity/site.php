@@ -39,6 +39,7 @@ function site(array $config) {
     $site = $repo->read_record_by_id('course', 1);
     $sitename = $site->fullname ? $site->fullname : 'A Moodle site';
     $sitelang = utils\get_course_lang($site);
+    $description = utils\get_string_html_removed($site->summary);
 
     return [
         'id' => $config['app_url'],
@@ -46,6 +47,9 @@ function site(array $config) {
             'type' => 'http://id.tincanapi.com/activitytype/lms',
             'name' => [
                 $sitelang => $sitename,
+            ],
+            'description' => [
+                $sitelang => 'description of the site: ' . $description,
             ],
         ],
     ];

@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_feedback\item_answered;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -39,12 +40,20 @@ use src\transformer\utils as utils;
  */
 function multichoice(array $config, \stdClass $event, \stdClass $feedbackvalue, \stdClass $feedbackitem) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $feedback = $repo->read_record_by_id('feedback', $feedbackitem->feedback);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
     $lang = utils\get_course_lang($course);
     $choices = explode("\n|", substr($feedbackitem->presentation, 6));
-    $selectedchoice = $choices[intval($feedbackvalue->value) - 1];
+    $selectedchoice = is_null($choices[intval($feedbackvalue->value) - 1]) ? '' : $choices[intval($feedbackvalue->value) - 1];
 
     return [[
         'actor' => utils\get_user($config, $user),
@@ -68,8 +77,8 @@ function multichoice(array $config, \stdClass $event, \stdClass $feedbackvalue, 
         'result' => [
             'response' => $selectedchoice,
             'completion' => $feedbackvalue->value !== '',
-            "extensions" => [
-                "http://learninglocker.net/xapi/cmi/choice/response" => $selectedchoice,
+            'extensions' => [
+                'http://learninglocker.net/xapi/cmi/choice/response' => $selectedchoice,
             ],
         ],
         'context' => [

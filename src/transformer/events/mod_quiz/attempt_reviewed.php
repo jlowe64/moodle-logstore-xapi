@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_quiz;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,33 +38,31 @@ use src\transformer\utils as utils;
  */
 function attempt_reviewed(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $learner = $repo->read_record_by_id('user', $event->relateduserid);
+    $userid = $event->relateduserid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
     $instructor = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $attempt = $repo->read_record_by_id('quiz_attempts', $event->objectid);
-    $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
-    $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $cmid = $event->contextinstanceid;
+    $attemptid = $event->objectid;
     $lang = utils\get_course_lang($course);
-
-    $object = [
-        'id' => $config['app_url'] . '/review.php?attempt=' . $attempt->id,
-        'definition' => [
-            'type' => 'http://activitystrea.ms/schema/1.0/review',
-            'name' => [
-                $lang => 'review'
-            ]
-        ]
-    ];
 
     // Set JISC specific activity type.
     if (utils\is_enabled_config($config, 'send_jisc_data')) {
-        $object = utils\get_activity\course_quiz($config, $course, $event->contextinstanceid);
+        $object = utils\get_activity\course_quiz($config, $course, $cmid);
     }
 
     return [[
-        'actor' => utils\get_user($config, $learner),
-        'verb' => utils\get_verb('received', $config, $lang),
-        'object' => $object,
+        'actor' => utils\get_user($config, $user),
+        'verb' => utils\get_verb('reviewed', $config, $lang),
+        'object' => utils\get_activity\quiz_attempt_review($config, $attemptid),
         'timestamp' => utils\get_event_timestamp($event),
         'context' => [
             'instructor' => utils\get_user($config, $instructor),
@@ -74,8 +73,8 @@ function attempt_reviewed(array $config, \stdClass $event) {
                 'grouping' => [
                     utils\get_activity\site($config),
                     utils\get_activity\course($config, $course),
-                    utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
-                    utils\get_activity\quiz_attempt($config, $attempt->id, $coursemodule->id),
+                    utils\get_activity\course_quiz($config, $course, $cmid),
+                    utils\get_activity\quiz_attempt($config, $attemptid, $cmid),
                 ],
                 'category' => [
                     utils\get_activity\source($config),

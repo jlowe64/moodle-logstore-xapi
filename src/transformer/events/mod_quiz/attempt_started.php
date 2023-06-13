@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_quiz;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,17 +38,25 @@ use src\transformer\utils as utils;
  */
 function attempt_started(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->relateduserid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $attempt = $repo->read_record_by_id('quiz_attempts', $event->objectid);
-    $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
-    $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
+    $userid = $event->relateduserid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $attemptid = $event->objectid;
+    $cmid = $event->contextinstanceid;
     $lang = utils\get_course_lang($course);
 
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => utils\get_verb('started', $config, $lang),
-        'object' => utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
+        'object' => utils\get_activity\quiz_attempt($config, $attemptid, $cmid),
         'timestamp' => utils\get_event_timestamp($event),
         'context' => [
             'platform' => $config['source_name'],
@@ -55,7 +64,7 @@ function attempt_started(array $config, \stdClass $event) {
             'extensions' => utils\extensions\base($config, $event, $course),
             'contextActivities' => [
                 'other' => [
-                    utils\get_activity\quiz_attempt($config, $attempt->id, $event->contextinstanceid),
+                    utils\get_activity\course_quiz($config, $course, $cmid),
                 ],
                 'grouping' => [
                     utils\get_activity\site($config),

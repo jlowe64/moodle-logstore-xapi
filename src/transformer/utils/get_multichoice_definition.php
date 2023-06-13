@@ -38,22 +38,27 @@ use src\transformer\utils as utils;
  * @return array
  */
 function get_multichoice_definition(array $config, \stdClass $questionattempt,
-\stdClass $question, string $lang, string $interactiontype = 'choice') {
+    \stdClass $question, string $lang, string $interactiontype = 'choice') {
+
+    $questiontext = utils\get_string_html_removed($question->questiontext);
+    $name = is_null($question->name) ? '' : $question->name;
+
     if ($config['send_response_choices']) {
         $repo = $config['repo'];
         $answers = $repo->read_records('question_answers', [
             'question' => $questionattempt->questionid
         ]);
         $choices = array_map(function ($answer) use ($lang) {
+            $response = utils\get_string_html_removed($answer->answer);
             return [
-                "id" => "$answer->id",
-                "description" => [
-                    $lang => utils\get_string_html_removed($answer->answer)
+                'id' => "$answer->id",
+                'description' => [
+                    $lang => $response
                 ]
             ];
         }, $answers);
 
-        $correctresponsepattern;
+        // Correctresponsepattern.
         switch ($interactiontype) {
             case 'sequencing':
                 $selections = explode('} {', rtrim(ltrim($questionattempt->rightanswer, '{'), '}'));
@@ -68,9 +73,12 @@ function get_multichoice_definition(array $config, \stdClass $questionattempt,
         return [
             'type' => 'http://adlnet.gov/expapi/activities/cmi.interaction',
             'name' => [
-                $lang => utils\get_string_html_removed($question->questiontext),
+                $lang => $name,
             ],
             'interactionType' => $interactiontype,
+            'description' => [
+                $lang => $questiontext,
+            ],
             'correctResponsesPattern' => [$correctresponsepattern],
             // Need to pull out id's that are appended during array_map so json parses it correctly as an array.
             'choices' => array_values($choices)
@@ -80,8 +88,11 @@ function get_multichoice_definition(array $config, \stdClass $questionattempt,
     return [
         'type' => 'http://adlnet.gov/expapi/activities/cmi.interaction',
         'name' => [
-            $lang => utils\get_string_html_removed($question->questiontext),
+            $lang => $name,
         ],
-        'interactionType' => $interactiontype
+        'interactionType' => $interactiontype,
+        'description' => [
+            $lang => $questiontext,
+        ],
     ];
 }

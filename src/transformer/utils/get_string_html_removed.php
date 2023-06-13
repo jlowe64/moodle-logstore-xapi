@@ -25,6 +25,7 @@
  */
 
 namespace src\transformer\utils;
+use Exception;
 
 /**
  * Transformer utility for cleaning HTML from strings.
@@ -32,8 +33,15 @@ namespace src\transformer\utils;
  * @param string $string The string to clean.
  * @return string
  */
-function get_string_html_removed(string $string) {
+function get_string_html_removed($string): string {
     // For some reason, newlines and &nbsp; is being added to strings.
-    $replacestrings = ["\n", "&nbsp;"];
-    return str_replace($replacestrings, "", strip_tags($string));
+
+    try {
+        $replacestrings = ["\n", '&nbsp;'];
+        $cleanedstring = str_replace($replacestrings, '', strip_tags($string));
+    } catch (Exception $e) {
+        $cleanedstring = '';
+    }
+
+    return $cleanedstring;
 }

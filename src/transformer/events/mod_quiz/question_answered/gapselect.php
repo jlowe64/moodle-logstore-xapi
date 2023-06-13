@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\mod_quiz\question_answered;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -37,14 +38,28 @@ use src\transformer\utils as utils;
  * @param \stdClass $question The question object.
  * @return array
  */
-function gapselect(array $config, \stdClass $event, \stdClass $questionattempt, \stdClass $question) {
+function gapselect(array $config, \stdClass $event, \stdClass $questionattempt, \stdClass $question): array {
+
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->relateduserid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
-    $attempt = $repo->read_record('quiz_attempts', ['uniqueid' => $questionattempt->questionusageid]);
-    $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
-    $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
+    $userid = $event->relateduserid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
+    $cmid = $event->contextinstanceid;
     $lang = utils\get_course_lang($course);
+    $attemptid = $event->objectid;
+    $questiontext = utils\get_string_html_removed($question->questiontext);
+    $responsesummary = is_null($questionattempt->responsesummary) ? '' : $questionattempt->responsesummary;
+    $name = is_null($question->name) ? '' : $question->name;
+    $rightanswer = is_null($questionattempt->rightanswer) ? '' : $questionattempt->rightanswer;
+    $questionid = is_null($question->id) ? 0 : $question->id;
     $selections = explode('} {', rtrim(ltrim($questionattempt->responsesummary, '{'), '}'));
 
     return [[
@@ -56,14 +71,20 @@ function gapselect(array $config, \stdClass $event, \stdClass $questionattempt, 
             ],
         ],
         'object' => [
-            'id' => utils\get_quiz_question_id($config, $coursemodule->id, $question->id),
+            'id' => utils\get_quiz_question_id($config, $cmid, $questionid),
             'definition' => utils\get_multichoice_definition($config, $questionattempt, $question, $lang, 'sequencing'),
+            'name' => [
+                $lang => $name,
+            ],
+            'description' => [
+                $lang => $questiontext,
+            ],
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
             'response' => implode ('[,]', $selections),
-            'completion' => $questionattempt->responsesummary !== null,
-            'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
+            'completion' => $responsesummary !== null,
+            'success' => $rightanswer === $responsesummary,
             'extensions' => [
                 'http://learninglocker.net/xapi/cmi/sequencing/response' => $selections,
             ],
@@ -76,8 +97,8 @@ function gapselect(array $config, \stdClass $event, \stdClass $questionattempt, 
                 'grouping' => [
                     utils\get_activity\site($config),
                     utils\get_activity\course($config, $course),
-                    utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
-                    utils\get_activity\quiz_attempt($config, $attempt->id, $coursemodule->id),
+                    utils\get_activity\course_quiz($config, $course, $cmid),
+                    utils\get_activity\quiz_attempt($config, $attemptid, $cmid),
                 ],
                 'category' => [
                     utils\get_activity\source($config),

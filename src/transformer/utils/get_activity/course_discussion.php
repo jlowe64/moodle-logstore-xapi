@@ -26,6 +26,7 @@
 
 namespace src\transformer\utils\get_activity;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -33,13 +34,32 @@ use src\transformer\utils as utils;
  *
  * @param array $config The transformer config settings.
  * @param \stdClass $course The course object.
- * @param \stdClass $discussion The discussion object.
+ * @param int $discussionid The id of the discussion.
+ * @param int $cmid The course module id.
  * @return array
  */
-function course_discussion(array $config, \stdClass $course, \stdClass $discussion) {
+function course_discussion(array $config, \stdClass $course, int $discussionid, int $cmid): array {
+
+    try {
+        $repo = $config['repo'];
+        $discussion = $repo->read_record_by_id('forum_discussions', $discussionid);
+        $discussionname = property_exists($discussion, 'name') ? $discussion->name : 'Discussion';
+        $coursemodule = $repo->read_record_by_id('course_modules', $cmid);
+        $status = $coursemodule->deletioninprogress;
+        if ($status == 0) {
+            $description = 'the forum discussion';
+        } else {
+            $description = 'deletion in progress';
+        }
+
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $discussionname = 'discussion id ' . $discussionid;
+        $description = 'deleted';
+    }
+
     $courselang = utils\get_course_lang($course);
-    $discussionurl = $config['app_url'].'/mod/forum/discuss.php?d='.$discussion->id;
-    $discussionname = property_exists($discussion, 'name') ? $discussion->name : 'Discussion';
+    $discussionurl = $config['app_url'].'/mod/forum/discuss.php?d='.$discussionid;
 
     return [
         'id' => $discussionurl,
@@ -47,6 +67,9 @@ function course_discussion(array $config, \stdClass $course, \stdClass $discussi
             'type' => 'http://id.tincanapi.com/activitytype/discussion',
             'name' => [
                 $courselang => $discussionname,
+            ],
+            'description' => [
+                $courselang => $description,
             ],
         ],
     ];

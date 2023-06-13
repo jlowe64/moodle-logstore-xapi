@@ -26,6 +26,7 @@
 
 namespace src\transformer\events\all;
 
+use Exception;
 use src\transformer\utils as utils;
 
 /**
@@ -35,10 +36,21 @@ use src\transformer\utils as utils;
  * @param \stdClass $event The event to be transformed.
  * @return array
  */
-function course_module_viewed(array $config, \stdClass $event) {
+
+function course_module_viewed(array $config, \stdClass $event): array {
+
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
-    $course = $repo->read_record_by_id('course', $event->courseid);
+    $userid = $event->userid;
+    if ($userid < 2) {
+        $userid = 1;
+    }
+    $user = $repo->read_record_by_id('user', $userid);
+    try {
+        $course = $repo->read_record_by_id('course', $event->courseid);
+    } catch (Exception $e) {
+        // OBJECT_NOT_FOUND.
+        $course = $repo->read_record_by_id('course', 1);
+    }
     $lang = utils\get_course_lang($course);
 
     return [[
