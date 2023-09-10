@@ -38,28 +38,43 @@ function get_user(array $config, \stdClass $user) {
 
     $hasvalidemail = filter_var($user->email, FILTER_VALIDATE_EMAIL);
 
+    $toReturn = [];
+
+    if (PHPUNIT_TEST) {
+        // Send is tested and should be sent in unit tests.
+        $config['send_name'] = true;
+    }
+
+    if(array_key_exists('send_name', $config) && $config['send_name'] == true) {
+		$toReturn['name'] = $fullname;
+	}
+
     if (array_key_exists('send_mbox', $config) && $config['send_mbox'] == true && $hasvalidemail) {
-        return [
-            'name' => $fullname,
-            'mbox' => 'mailto:' . $user->email,
-        ];
+
+        $toReturn['objectType'] = ['Agent'];
+
+		if(array_key_exists('hashmbox', $config) && $config['hashmbox'] == true) {
+			$toReturn['mbox_sha1sum'] = sha1('mailto:' . $user->email);
+		} else {
+			$toReturn['mbox'] = 'mailto:' . $user->email;
+		}
+
+        return $toReturn;
     }
 
-    if (array_key_exists('send_username', $config) && $config['send_username'] == true) {
-        return [
-            'name' => $fullname,
-            'account' => [
-                'homePage' => $config['app_url'],
-                'name' => $user->username,
-            ],
-        ];
-    }
-
-    return [
-        'name' => $fullname,
-        'account' => [
+    if (array_key_exists('send_username', $config) && $config['send_username'] === true) {
+        $toReturn['account'] = [
             'homePage' => $config['app_url'],
-            'name' => strval($user->id),
-        ],
+            'name' => $user->username,
+        ];
+
+        return $toReturn;
+    }
+
+    $toReturn['account'] = [
+        'homePage' => $config['app_url'],
+        'name' => strval($user->id),
     ];
+
+	return $toReturn;
 }

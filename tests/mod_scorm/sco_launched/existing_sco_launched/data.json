@@ -18,5 +18,11 @@
             "id": 1,
             "name": "test_name"
         }
+    ],
+    "scorm_scoes": [
+        {
+            "id": 1,
+            "scorm": 1
+        }
     ]
 }

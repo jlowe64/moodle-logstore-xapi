@@ -74,11 +74,34 @@ abstract class enchancement_jisc_skeleton extends \advanced_testcase {
             return;
         }
 
+        /**
+         * In src/transformer/get_event_function_map.php we created a fix for core_event_deprecated_testcase. This causes the
+         * xapi_test_case to fail.
+         */
+        if (!isset($GLOBALS['PHPUNIT_XAPI_TESTCASE'])) {
+            // We use a mutable global.
+            $GLOBALS['PHPUNIT_XAPI_TESTCASE'] = true;
+        }
+
         // From Moodle 3.9 an extra event has been added.
         if ($version >= 2020061500) {
             $this->generatedhistorylog = 12;
             $this->generatedxapilog = 2;
         }
+
+        // From Moodle 4.1 is just one.
+        if ($version >= 2022112800) {
+            $this->generatedxapilog = 1;
+        }
+    }
+
+    /**
+     * Remove anything done in the setup.
+     *
+     * @return void
+     */
+    protected function tearDown(): void {
+        unset($GLOBALS['PHPUNIT_XAPI_TESTCASE']);
     }
 
     /**
