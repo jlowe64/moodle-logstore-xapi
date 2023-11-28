@@ -74,12 +74,40 @@ function chapter_viewed(array $config, \stdClass $event) {
         ]
     ];
 
-    if ($chapter->subchapter != '0') {
-        $parentchapter = $repo->read_record_by_id('book_chapters', $chapter->subchapter);
-        $statement['context']['contextActivities']['parent'] = [
-            utils\get_activity\book_chapter($config, $course, $parentchapter, $event->contextinstanceid)
-        ];
+    // Is parent chapter?
+    if ($chapter->subchapter == '0') {
+        return [$statement];
     }
+
+    $parentchapters = $repo->read_records('book_chapters', [
+        'bookid' => $chapter->bookid,
+        'subchapter' => 0,
+    ]);
+
+    // Could not find parent chapter?
+    if (empty($parentchapters)) {
+        return [$statement];
+    }
+
+    // Sort the parentchapters by pagenumber ids.
+    usort($parentchapters, function ($a, $b) {
+        return $a->pagenum - $b->pagenum;
+    });
+
+    // As a default, the first element in the array becomes parent chapter.
+    $parentchapter = reset($parentchapters);
+
+    foreach ($parentchapters as $posparent) {
+        // Stop the loop when page number surpasses the subchapter.
+        if ($posparent->pagenum > $chapter->pagenum) {
+            break;
+        }
+        $parentchapter = $posparent;
+    }
+
+    $statement['context']['contextActivities']['parent'] = [
+        utils\get_activity\book_chapter($config, $course, $parentchapter, $event->contextinstanceid)
+    ];
 
     return [$statement];
 }
