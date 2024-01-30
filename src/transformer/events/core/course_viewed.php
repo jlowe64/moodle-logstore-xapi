@@ -36,8 +36,16 @@ use src\transformer\utils as utils;
  * @return array
  */
 function course_viewed(array $config, \stdClass $event) {
+    global $CFG;
+
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->userid);
+
+    // Get the userid or a valid userid for guest.
+    if (!isset($event->userid)) {
+        $event->userid = 0;
+    }
+    $userid = $event->userid == 0 && isset($CFG->siteguest) ? $CFG->siteguest : $event->userid;
+    $user = $repo->read_record_by_id('user', $userid);
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
 

@@ -36,8 +36,17 @@ use src\transformer\utils as utils;
  * @return array
  */
 function user_created(array $config, \stdClass $event) {
+    global $CFG;
+
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->relateduserid);
+
+    // Get the relateduserid or a valid relateduserid from the guest userid.
+    if (!isset($event->relateduserid)) {
+        $event->relateduserid = 0;
+    }
+    $relateduserid = $event->relateduserid == 0 && isset($CFG->siteguest) ? $CFG->siteguest : $event->relateduserid;
+    $user = $repo->read_record_by_id('user', $relateduserid);
+
     $lang = $config['source_lang'];
 
     return [[
