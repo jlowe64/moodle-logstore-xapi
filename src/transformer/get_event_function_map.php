@@ -97,8 +97,14 @@ function get_event_function_map() {
         '\totara_program\event\program_assigned' => 'totara_program\program_assigned'
     ];
 
+    global $CFG;
+    // The use of $CFG->debugusers is interpreted for Moodle core as $forceddebug in the degugging() function.
+    // Disable temporary $CFG->debugusers to prevent debugging messages throughout administration options.
+    $debugusers = $CFG->debugusers;
+    $CFG->debugusers = '';
     $environmentevents = class_exists("report_eventlist_list_generator") ?
         array_keys(\report_eventlist_list_generator::get_all_events_list(false)) : array_keys($availableevents);
+    $CFG->debugusers = $debugusers;
 
     return array_filter($availableevents, function($k) use ($environmentevents) {
         return in_array($k, $environmentevents);
