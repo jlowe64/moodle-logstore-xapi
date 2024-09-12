@@ -84,6 +84,18 @@ if ($hassiteconfig) {
         get_string('send_jisc_data', 'logstore_xapi'),
         get_string('send_jisc_data_desc', 'logstore_xapi'), 0));
 
+    $settings->add(new admin_setting_configcheckbox('logstore_xapi/send_bestr_data',
+        get_string('send_bestr_data', 'logstore_xapi'),
+        get_string('send_bestr_data_desc', 'logstore_xapi'), 0));
+
+    $settings->add(new admin_setting_configtext('logstore_xapi/bestr_custom_birthdate',
+        get_string('bestr_custom_birthdate', 'logstore_xapi'),
+        get_string('bestr_custom_birthdate_desc', 'logstore_xapi'), '', PARAM_TEXT));
+
+    $settings->add(new admin_setting_configtext('logstore_xapi/bestr_custom_cf',
+        get_string('bestr_custom_cf', 'logstore_xapi'),
+        get_string('bestr_custom_cf_desc', 'logstore_xapi'), '', PARAM_TEXT));
+
     $settings->add(new admin_setting_configcheckbox('logstore_xapi/sendresponsechoices',
        get_string('send_response_choices', 'logstore_xapi'),
        get_string('send_response_choices_desc', 'logstore_xapi'), 0));

@@ -43,5 +43,11 @@ function base(array $config, \stdClass $event, $course=null) {
         $base = array_merge($base, utils\extensions\jisc($config, $event, $course));
     }
 
+    // CINECA lrs.bestr.it extra user data start.
+    if (utils\is_enabled_config($config, 'send_bestr_data')) {
+        $base = array_merge($base, utils\extensions\bestr($config, $event, $course));
+    }
+    // CINECA lrs.bestr.it extra user data stop.
+
     return $base;
 }
