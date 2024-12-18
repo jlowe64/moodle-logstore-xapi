@@ -53,19 +53,39 @@ function load(array $config, array $events) {
         $auth = base64_encode($username.':'.$password);
         $postdata = json_encode($statements);
 
+
+
         if ($postdata === false) {
             throw new \Exception('JSON encode error: '.json_last_error_msg());
         }
 
-        $request = new \curl();
+        //Old Client Code
+        /*$request = new \curl();
+        print_r($url);
         $responsetext = $request->post($url, $postdata, [
             'CURLOPT_HTTPHEADER' => [
                 'Authorization: Basic '.$auth,
-                'X-Experience-API-Version: 1.0.0',
+                'X-Experience-API-Version: 1.0.3',
                 'Content-Type: application/json',
             ],
         ]);
-        $responsecode = $request->info['http_code'];
+        print_r($responsetext);
+        print_r($request);
+        $responsecode = $request->info['http_code'];*/
+
+        $request = curl_init();
+        curl_setopt($request, CURLOPT_URL, $url);
+        curl_setopt($request, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($request, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($request, CURLOPT_HTTPHEADER, [
+            'Authorization: Basic '.$auth,
+            'X-Experience-API-Version: 1.0.3',
+            'Content-Type: application/json',
+        ]);
+
+        $responsetext = curl_exec($request);
+        $responsecode = curl_getinfo($request, CURLINFO_RESPONSE_CODE);
 
         if ($responsecode !== 200) {
             throw new \Exception($responsetext, $responsecode);

@@ -1,0 +1,14 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "name": "h5pactivity"
+    }
+  ],
+  "h5pactivity": [
+    {
+      "id": 1,
+      "name": "test_name"
+    }
+  ]
+}

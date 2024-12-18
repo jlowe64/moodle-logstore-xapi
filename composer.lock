@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2dd098e912bb2fcfd6129ec3d6933869",
+    "content-hash": "a9b29ecdb8e0f00e16e341c0c6cec10c",
     "packages": [],
     "packages-dev": [
         {
-            "name": "learninglocker/statementfactory",
-            "version": "v0.0.11",
+            "name": "yetanalytics/statementfactory",
+            "version": "v0.0.12",
             "source": {
                 "type": "git",
-                "url": "https://github.com/LearningLocker/StatementFactory.git",
-                "reference": "92c8d9a94f1edc29ba899ed30409f045315c7273"
+                "url": "https://github.com/yetanalytics/StatementFactory.git",
+                "reference": "748d2ab5a51075436cf94a905cdb68facf08f782"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LearningLocker/StatementFactory/zipball/92c8d9a94f1edc29ba899ed30409f045315c7273",
-                "reference": "92c8d9a94f1edc29ba899ed30409f045315c7273",
+                "url": "https://api.github.com/repos/yetanalytics/StatementFactory/zipball/748d2ab5a51075436cf94a905cdb68facf08f782",
+                "reference": "748d2ab5a51075436cf94a905cdb68facf08f782",
                 "shasum": ""
             },
             "type": "library",
@@ -29,26 +29,33 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL v3"
+                "GPL-3.0-only"
             ],
             "authors": [
                 {
                     "name": "Ryan Smith",
                     "email": "0ryansmith1994@gmail.com"
+                },
+                {
+                    "name": "Milt Reder",
+                    "email": "milt@yetanalytics.com"
                 }
             ],
             "description": "Learning Locker's classes for xAPI.",
-            "time": "2020-02-11T10:15:03+00:00"
+            "support": {
+                "source": "https://github.com/yetanalytics/StatementFactory/tree/v0.0.12"
+            },
+            "time": "2024-12-18T14:32:51+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "ext-json": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }

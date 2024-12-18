@@ -21,6 +21,7 @@
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,9 +36,5 @@ namespace src\transformer\utils;
  * @return int
  */
 function get_scaled_score($rawscore, $minscore, $maxscore) {
-    if ($rawscore >= 0) {
-        return $rawscore / $maxscore;
-    } else {
-        return $rawscore / $minscore;
-    }
+    return (($rawscore - $minscore) / ($maxscore - $minscore) * 2) - 1;
 }

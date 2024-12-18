@@ -39,30 +39,24 @@ function attempt_started(array $config, \stdClass $event) {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->relateduserid);
     $course = $repo->read_record_by_id('course', $event->courseid);
-    $attempt = $repo->read_record_by_id('quiz_attempts', $event->objectid);
-    $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
-    $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
     $lang = utils\get_course_lang($course);
 
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => utils\get_verb('started', $config, $lang),
-        'object' => utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
-        'timestamp' => utils\get_event_timestamp($event),
+        'object' => utils\get_activity\quiz_attempt(
+            $config, $event->objectid, $event->contextinstanceid
+        ),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'other' => [
-                    utils\get_activity\quiz_attempt($config, $attempt->id, $event->contextinstanceid),
-                ],
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course),
-                ],
+                'parent' => utils\context_activities\get_parent(
+                    $config,
+                    $event->contextinstanceid,
+                    true
+                ),
                 'category' => [
-                    utils\get_activity\source($config),
+                    utils\get_activity\site($config),
                 ]
             ],
         ]

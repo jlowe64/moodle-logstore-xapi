@@ -1,0 +1,9 @@
+{
+  "courseid": 1,
+  "eventname": "\\core\\event\\group_deleted",
+  "id": 1,
+  "objectid": 1,
+  "objecttable": "groups",
+  "timecreated": 1433946701,
+  "userid": 1
+}

@@ -1,0 +1,10 @@
+{
+  "courseid": 1,
+  "eventname": "\\core\\event\\notes_viewed",
+  "id": 1,
+  "objectid": 1,
+  "objecttable": "post",
+  "timecreated": 1433946701,
+  "userid": 1,
+  "relateduserid": 2
+}

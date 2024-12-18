@@ -47,38 +47,39 @@ function chapter_viewed(array $config, \stdClass $event) {
         'verb' => [
             'id' => 'http://id.tincanapi.com/verb/viewed',
             'display' => [
-                $lang => 'viewed'
+                'en' => 'Viewed'
             ]
         ],
         'object' => utils\get_activity\book_chapter($config, $course, $chapter, $event->contextinstanceid),
-        'timestamp' => utils\get_event_timestamp($event),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course),
-                    utils\get_activity\course_module(
-                        $config,
-                        $course,
-                        $event->contextinstanceid,
-                        'http://id.tincanapi.com/activitytype/book'
-                    )
-                ],
+                'parent' => utils\context_activities\get_parent(
+                    $config,
+                    $event->contextinstanceid,
+                    true
+                ),
                 'category' => [
-                    utils\get_activity\source($config),
-                ]
+                    utils\get_activity\site($config),
+                ],
             ]
         ]
     ];
 
     if ($chapter->subchapter != '0') {
         $parentchapter = $repo->read_record_by_id('book_chapters', $chapter->subchapter);
-        $statement['context']['contextActivities']['parent'] = [
-            utils\get_activity\book_chapter($config, $course, $parentchapter, $event->contextinstanceid)
-        ];
+        $statement['context']['contextActivities']['parent'] =
+            array_merge(
+                [
+                    utils\get_activity\book_chapter(
+                        $config,
+                        $course,
+                        $parentchapter,
+                        $event->contextinstanceid
+                    ),
+                ],
+                $statement['context']['contextActivities']['parent']
+            );
     }
 
     return [$statement];

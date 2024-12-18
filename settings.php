@@ -68,6 +68,10 @@ if ($hassiteconfig) {
         get_string('mbox', 'logstore_xapi'),
         get_string('mbox_desc', 'logstore_xapi'), 0));
 
+    $settings->add(new admin_setting_configcheckbox('logstore_xapi/send_name',
+        get_string('send_name', 'logstore_xapi'),
+        get_string('send_name_desc', 'logstore_xapi'), 1));
+
     $settings->add(new admin_setting_configcheckbox('logstore_xapi/shortcourseid',
         get_string('shortcourseid', 'logstore_xapi'),
         get_string('shortcourseid_desc', 'logstore_xapi'), 0));
@@ -79,6 +83,10 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_configcheckbox('logstore_xapi/send_username',
         get_string('send_username', 'logstore_xapi'),
         get_string('send_username_desc', 'logstore_xapi'), 0));
+
+    $settings->add(new admin_setting_configtext('logstore_xapi/account_homepage',
+        get_string('account_homepage', 'logstore_xapi'),
+        get_string('account_homepage_desc', 'logstore_xapi'), $CFG->wwwroot, PARAM_TEXT));
 
     $settings->add(new admin_setting_configcheckbox('logstore_xapi/send_jisc_data',
         get_string('send_jisc_data', 'logstore_xapi'),

@@ -42,18 +42,13 @@ function user_loggedout(array $config, \stdClass $event) {
 
     return [[
         'actor' => utils\get_user($config, $user),
-        'verb' => utils\get_verb('loggedout', $config, $lang),
-        'object' => utils\get_activity\site($config),
-        'timestamp' => utils\get_event_timestamp($event),
-        'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, null),
-            'contextActivities' => [
-                'category' => [
-                    utils\get_activity\source($config)
-                ]
+        'verb' => [
+            'id' => 'https://xapi.edlm/profiles/edlm-lms/concepts/verbs/logout',
+            'display' => [
+                'en' => 'Logged Out',
             ],
-        ]
+        ],
+        'object' => utils\get_activity\site($config),
+        'context' => utils\get_context_base($config, $event, $lang)
     ]];
 }

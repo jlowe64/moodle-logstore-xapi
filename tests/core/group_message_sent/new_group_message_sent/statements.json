@@ -1,0 +1,91 @@
+[
+  {
+    "actor": {
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      },
+      "name": "test_fullname"
+    },
+    "verb": {
+      "display": {
+        "en": "Sent"
+      },
+      "id": "http://activitystrea.ms/send"
+    },
+    "object": {
+      "id": "http://www.example.org/message?id=1",
+      "objectType": "Activity",
+      "definition": {
+        "name": {
+          "en": "test_message_subject"
+        },
+        "description": {
+          "en": "test_message_body"
+        },
+        "type": "http://id.tincanapi.com/activitytype/chat-message"
+      }
+    },
+    "context": {
+      "contextActivities": {
+        "grouping": [
+          {
+            "id": "http://www.example.org/group/index.php?id=1",
+            "objectType": "Activity",
+            "definition": {
+              "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/group",
+              "name": {
+                "en": "test_name"
+              }
+            }
+          }
+        ],
+        "parent": [
+          {
+            "id": "http://www.example.org/course/view.php?id=1",
+            "definition": {
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ],
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "definition": {
+              "type": "http://id.tincanapi.com/activitytype/lms",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ]
+      },
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "event_function": "\\src\\transformer\\events\\core\\group_message_sent",
+          "event_name": "\\core\\event\\group_message_sent",
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development"
+        },
+        "https://yetanalytics.com/profiles/prepositions/concepts/context-extensions/to": {
+          "name": "test_name",
+          "objectType": "Group",
+          "member": [
+            {
+              "account": {
+                "homePage": "http://www.example.org",
+                "name": "1"
+              },
+              "name": "test_fullname"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

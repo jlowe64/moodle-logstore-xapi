@@ -55,28 +55,25 @@ function user_report_viewed(array $config, \stdClass $event) {
         'verb' => [
             'id' => 'http://id.tincanapi.com/verb/viewed',
             'display' => [
-                $lang => 'viewed'
+                'en' => 'Viewed'
             ],
         ],
         'object' => utils\get_activity\user_report($config, $relateduser, $course, $lang),
-        'timestamp' => utils\get_event_timestamp($event),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                ],
                 'category' => [
-                    utils\get_activity\source($config),
+                    utils\get_activity\site($config),
                 ]
             ],
         ]
     ];
 
     if ($event->courseid != "0") {
-        array_push($statement['context']['contextActivities']['grouping'], utils\get_activity\course($config, $course));
+        $statement['context']['contextActivities']['parent'] = [
+            utils\get_activity\course($config, $course)
+        ];
+
     }
 
     return[$statement];

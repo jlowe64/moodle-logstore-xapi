@@ -23,7 +23,12 @@ global $CFG;
 require_once($CFG->dirroot . '/admin/tool/log/store/xapi/vendor/autoload.php');
 require_once($CFG->dirroot . '/admin/tool/log/store/xapi/src/autoload.php');
 
+foreach (glob($CFG->dirroot . '/admin/tool/log/store/xapi/tests/utils/*.php') as $filename) {
+    require_once($filename);
+}
+
 use \Locker\XApi\Statement as LockerStatement;
+use TestUtils as utils;
 
 /**
  * Default test cases for the plugin.
@@ -32,6 +37,7 @@ use \Locker\XApi\Statement as LockerStatement;
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class xapi_test_case extends \advanced_testcase {
@@ -57,7 +63,13 @@ abstract class xapi_test_case extends \advanced_testcase {
      * @return object
      */
     protected function get_test_data() {
-        return json_decode(file_get_contents($this->get_test_dir().'/data.json'));
+        // TODO: only pull this once
+        // get common event fields
+        global $CFG;
+        $commonData = json_decode(file_get_contents($CFG->dirroot . '/admin/tool/log/store/xapi/tests/common/data.json'));
+        $data = json_decode(file_get_contents($this->get_test_dir().'/data.json'));
+
+        return utils\deep_merge_objects($commonData, $data);
     }
 
     /**
@@ -66,16 +78,30 @@ abstract class xapi_test_case extends \advanced_testcase {
      * @return object
      */
     protected function get_event() {
-        return json_decode(file_get_contents($this->get_test_dir().'/event.json'));
+        // TODO: only pull this once
+        // get common event fields
+        global $CFG;
+        $commonEvent = json_decode(file_get_contents($CFG->dirroot . '/admin/tool/log/store/xapi/tests/common/event.json'));
+        // get this event
+        $event = json_decode(file_get_contents($this->get_test_dir().'/event.json'));
+        // merge and return
+        return utils\deep_merge_objects($commonEvent, $event);
     }
 
     /**
      * Retrieve the expected statement from statements.json.
      *
-     * @return string|false
+     * @return array
      */
     protected function get_expected_statements() {
-        return file_get_contents($this->get_test_dir().'/statements.json');
+        // TODO: only pull this once
+        // Get common statement fields
+        global $CFG;
+        $commonStatement = json_decode(file_get_contents($CFG->dirroot . '/admin/tool/log/store/xapi/tests/common/statement.json'));
+        return array_map(function ($statement) use ($commonStatement) {
+            // add common expectations for all statements
+            return utils\deep_merge_objects($commonStatement, $statement);
+        }, json_decode(file_get_contents($this->get_test_dir().'/statements.json')));
     }
 
     /**
@@ -127,6 +153,8 @@ abstract class xapi_test_case extends \advanced_testcase {
             'source_version' => '1.0.0',
             'source_lang' => 'en',
             'send_mbox' => false,
+            'send_name' => true,
+            'account_homepage' => 'http://www.example.org',
             'send_response_choices' => false,
             'send_short_course_id' => false,
             'send_course_and_module_idnumber' => false,
@@ -169,8 +197,10 @@ abstract class xapi_test_case extends \advanced_testcase {
 
         if (array_key_exists($pluginname, $plugins) || $plugintype == 'core') {
             $expectedstatements = $this->get_expected_statements();
-            $actualstatements = json_encode($statements, JSON_PRETTY_PRINT);
-            $this->assertEquals($expectedstatements, $actualstatements);
+            $this->assertEquals(
+                utils\objectToArray($expectedstatements),
+                utils\objectToArray($statements)
+            );
         } else {
             $this->markTestSkipped('Plugin ' . $pluginname . ' not installed, skipping');
         }

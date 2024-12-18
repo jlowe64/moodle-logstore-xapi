@@ -1,89 +1,100 @@
 [
-    {
-        "actor": {
-            "name": "test2_fullname",
-            "account": {
-                "homePage": "http:\/\/www.example.org",
-                "name": "2"
-            }
-        },
-        "verb": {
-            "id": "http:\/\/adlnet.gov\/expapi\/verbs\/scored",
-            "display": {
-                "en": "attained grade for"
-            }
-        },
-        "object": {
-            "id": "http:\/\/www.example.org\/mod\/assign\/view.php?id=1",
-            "definition": {
-                "type": "http:\/\/adlnet.gov\/expapi\/activities\/assessment",
-                "name": {
-                    "en": "test_name"
-                }
-            }
-        },
-        "result": {
-            "score": {
-                "raw": 1,
-                "min": 0,
-                "max": 2,
-                "scaled": 0.5
-            },
-            "completion": true,
-            "success": true
-        },
-        "timestamp": "2015-06-10T22:31:41+08:00",
-        "context": {
-            "instructor": {
-                "name": "test_fullname",
-                "account": {
-                    "homePage": "http:\/\/www.example.org",
-                    "name": "1"
-                }
-            },
-            "platform": "Moodle",
-            "language": "en",
-            "extensions": {
-                "http:\/\/lrs.learninglocker.net\/define\/extensions\/info": {
-                    "http:\/\/moodle.org": "1.0.0",
-                    "https:\/\/github.com\/xAPI-vle\/moodle-logstore_xapi": "0.0.0-development",
-                    "event_name": "\\mod_assign\\event\\submission_graded",
-                    "event_function": "\\src\\transformer\\events\\mod_assign\\assignment_graded"
-                }
-            },
-            "contextActivities": {
-                "grouping": [
-                    {
-                        "id": "http:\/\/www.example.org",
-                        "definition": {
-                            "type": "http:\/\/id.tincanapi.com\/activitytype\/lms",
-                            "name": {
-                                "en": "test_name"
-                            }
-                        }
-                    },
-                    {
-                        "id": "http:\/\/www.example.org\/course\/view.php?id=1",
-                        "definition": {
-                            "type": "http:\/\/id.tincanapi.com\/activitytype\/lms\/course",
-                            "name": {
-                                "en": "test_name"
-                            }
-                        }
-                    }
-                ],
-                "category": [
-                    {
-                        "id": "http:\/\/moodle.org",
-                        "definition": {
-                            "type": "http:\/\/id.tincanapi.com\/activitytype\/source",
-                            "name": {
-                                "en": "Moodle"
-                            }
-                        }
-                    }
-                ]
-            }
+  {
+    "actor": {
+      "name": "test2_fullname",
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "2"
+      }
+    },
+    "verb": {
+      "id": "https://w3id.org/xapi/tla/verbs/scored",
+      "display": {
+        "en": "Scored"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/mod/assign/view.php?id=1#submission",
+      "objectType": "Activity",
+      "definition": {
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/submission",
+        "name": {
+          "en": "test_name Submission"
         }
+      }
+    },
+    "result": {
+      "score": {
+        "raw": 1.0,
+        "min": 0.0,
+        "max": 2.0,
+        "scaled": 0.0
+      },
+      "success": true
+    },
+    "context": {
+      "instructor": {
+        "name": "test_fullname",
+        "account": {
+          "homePage": "http://www.example.org",
+          "name": "1"
+        }
+      },
+      "language": "en",
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development",
+          "event_name": "\\mod_assign\\event\\submission_graded",
+          "event_function": "\\src\\transformer\\events\\mod_assign\\assignment_graded"
+        }
+      },
+      "contextActivities": {
+        "parent": [
+          {
+            "id": "http://www.example.org/mod/assign/view.php?id=1",
+            "definition": {
+              "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/assignment",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          },
+          {
+            "id": "http://www.example.org/course/section.php?id=1",
+            "objectType": "Activity",
+            "definition": {
+              "name": {
+                "en": "test_name Section 0"
+              },
+              "type": "http://id.tincanapi.com/activitytype/section"
+            }
+          },
+          {
+            "id": "http://www.example.org/course/view.php?id=1",
+            "definition": {
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ],
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "definition": {
+              "type": "http://id.tincanapi.com/activitytype/lms",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ]
+      }
     }
+  }
 ]

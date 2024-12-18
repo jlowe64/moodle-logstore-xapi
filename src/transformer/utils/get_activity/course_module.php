@@ -21,6 +21,7 @@
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,10 +35,9 @@ use src\transformer\utils as utils;
  * @param array $config The transformer config settings.
  * @param \stdClass $course The course object.
  * @param int $cmid The id of the context.
- * @param string $xapitype The type of xAPI object.
  * @return array
  */
-function course_module(array $config, \stdClass $course, int $cmid, string $xapitype) {
+function course_module(array $config, \stdClass $course, int $cmid) {
     $repo = $config['repo'];
     $coursemodule = $repo->read_record_by_id('course_modules', $cmid);
     $module = $repo->read_record_by_id('modules', $coursemodule->module);
@@ -47,14 +47,45 @@ function course_module(array $config, \stdClass $course, int $cmid, string $xapi
     $courselang = utils\get_course_lang($course);
     $instancename = property_exists($instance, 'name') ? $instance->name : $module->name;
 
-    $object = [
-        'id' => $coursemoduleurl,
-        'definition' => [
-            'type' => $xapitype,
+    $activitytype = utils\get_module_activity_type(
+        $module->name,
+        utils\is_enabled_config($config, 'send_jisc_data')
+    );
+
+    // default definition
+    $def = [
+        'type' => $activitytype,
+        'name' => [
+            $courselang => $instancename,
+        ],
+    ];
+
+    // process special cases
+
+    // Choice
+    if ($module->name === 'choice') {
+        $def = utils\get_activity\definition\choice\get_choice_definition(
+            $config, $instance, $courselang
+        );
+    }
+
+    // Survey & Wiki use "intro"
+    if ($module->name === 'survey' || $module->name === 'wiki') {
+        $def = [
+            'type' => $activitytype,
             'name' => [
                 $courselang => $instancename,
             ],
-        ],
+            'description' => [
+                $courselang => utils\get_string_html_removed($instance->intro),
+            ],
+        ];
+    }
+
+    $object = [
+        ...base(),
+        'id' => $coursemoduleurl,
+        'definition' => $def,
     ];
 
     if (utils\is_enabled_config($config, 'send_course_and_module_idnumber')) {

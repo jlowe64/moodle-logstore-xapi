@@ -1,0 +1,97 @@
+[
+  {
+    "actor": {
+      "name": "test_fullname",
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      }
+    },
+    "verb": {
+      "id": "http://adlnet.gov/expapi/verbs/completed",
+      "display": {
+        "en": "Completed"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/mod/lesson/view.php?id=1#lesson",
+      "definition": {
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/lesson-session",
+        "name": {
+          "en": "test_lesson"
+        },
+        "description": {
+          "en": "test_lesson_intro"
+        }
+      },
+      "objectType": "Activity"
+    },
+    "result": {
+      "completion": true,
+      "success": true,
+      "score": {
+        "min": 0,
+        "max": 100,
+        "raw": 75,
+        "scaled": 0.5
+      }
+    },
+    "context": {
+      "language": "en",
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development",
+          "event_name": "\\mod_lesson\\event\\lesson_ended",
+          "event_function": "\\src\\transformer\\events\\mod_lesson\\lesson_ended"
+        }
+      },
+      "contextActivities": {
+        "parent": [
+          {
+            "id": "http://www.example.org/mod/lesson/view.php?id=1",
+            "definition": {
+              "type": "http://adlnet.gov/expapi/activities/lesson",
+              "name": {
+                "en": "test_lesson"
+              }
+            },
+            "objectType": "Activity"
+          },
+          {
+            "id": "http://www.example.org/course/section.php?id=1",
+            "objectType": "Activity",
+            "definition": {
+              "name": {
+                "en": "test_name Section 0"
+              },
+              "type": "http://id.tincanapi.com/activitytype/section"
+            }
+          },
+          {
+            "id": "http://www.example.org/course/view.php?id=1",
+            "definition": {
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ],
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "definition": {
+              "type": "http://id.tincanapi.com/activitytype/lms",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ]
+      }
+    }
+  }
+]

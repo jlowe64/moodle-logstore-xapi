@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "objecttable": "assign",
+  "objectid": 1,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_assign\\event\\submission_unlocked",
+  "action": "unlocked",
+  "relateduserid": 2
+}

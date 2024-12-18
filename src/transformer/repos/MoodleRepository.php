@@ -46,10 +46,11 @@ class MoodleRepository extends Repository {
      *
      * @param string $type The name of the table to retrieve from.
      * @param array $query Any additional conditions to add to the query.
+     * @param string $sort Sort string for how to order the data.
      * @return array
      */
-    public function read_records(string $type, array $query) {
-        return $this->store->get_records($type, $query);
+    public function read_records(string $type, array $query, string $sort = '') {
+        return $this->store->get_records($type, $query, $sort);
     }
 
     /**

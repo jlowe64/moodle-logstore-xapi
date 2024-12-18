@@ -21,6 +21,7 @@
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -52,20 +53,20 @@ function assignment_submitted(array $config, \stdClass $event) {
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => $verb,
-        'object' => utils\get_activity\course_assignment($config, $event->contextinstanceid, $assignment->name, $lang),
-        'timestamp' => utils\get_event_timestamp($event),
+        'object' => utils\get_activity\assign_submission(
+            $config, $event->contextinstanceid, $lang
+        ),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course),
-                ],
+                'parent' => utils\context_activities\get_parent(
+                    $config,
+                    $event->contextinstanceid,
+                    true
+                ),
                 'category' => [
-                    utils\get_activity\source($config)
-                ]
+                    utils\get_activity\site($config),
+                ],
             ],
         ]
     ]];

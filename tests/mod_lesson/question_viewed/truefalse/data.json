@@ -1,0 +1,36 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "name": "lesson"
+    }
+  ],
+  "lesson": [
+    {
+      "id": 1,
+      "name": "test_lesson",
+      "intro": "test_lesson_intro"
+    }
+  ],
+  "lesson_pages": [
+    {
+      "id": 1,
+      "lessonid": 1,
+      "qtype": 2,
+      "title": "lesson_question_page_title",
+      "contents": "lesson_question_page_contents"
+    }
+  ],
+  "lesson_answers": [
+    {
+      "pageid": 1,
+      "response": "true",
+      "score": 1
+    },
+    {
+      "pageid": 1,
+      "response": "false",
+      "score": 0
+    }
+  ]
+}

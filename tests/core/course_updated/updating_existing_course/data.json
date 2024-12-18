@@ -1,0 +1,16 @@
+{
+  "course": [
+    {
+      "id": 1,
+      "fullname": "test_name",
+      "lang": "en"
+    }
+  ],
+  "user": [
+    {
+      "id": 1,
+      "firstname": "test_fullname",
+      "email": "test@test.com"
+    }
+  ]
+}

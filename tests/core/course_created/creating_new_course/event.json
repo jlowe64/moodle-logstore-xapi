@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "objecttable": "course",
+  "timecreated": 1433946701,
+  "objectid": 1,
+  "courseid": 1,
+  "eventname": "\\core\\event\\course_created",
+  "userid": 1
+}

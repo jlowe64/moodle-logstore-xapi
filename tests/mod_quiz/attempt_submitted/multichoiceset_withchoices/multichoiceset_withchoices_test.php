@@ -29,6 +29,7 @@ require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/xapi_test_case.ph
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class multichoiceset_withchoices_test extends \logstore_xapi\xapi_test_case {
@@ -77,6 +78,9 @@ class multichoiceset_withchoices_test extends \logstore_xapi\xapi_test_case {
             'send_short_course_id' => false,
             'send_course_and_module_idnumber' => false,
             'send_username' => false,
+            'send_name' => true,
+            'account_homepage' => 'http://www.example.org',
+            'session_id' => 'test_session_id',
             'plugin_url' => 'https://github.com/xAPI-vle/moodle-logstore_xapi',
             'plugin_version' => '0.0.0-development',
             'repo' => new \src\transformer\repos\TestRepository($testdata),

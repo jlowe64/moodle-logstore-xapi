@@ -1,0 +1,11 @@
+{
+  "courseid": 1,
+  "eventname": "\\core\\event\\user_enrolment_deleted",
+  "id": 1,
+  "objectid": 1,
+  "objecttable": "user_enrolments",
+  "timecreated": 1433946701,
+  "userid": 1,
+  "relateduserid": 2,
+  "other": "a:1:{s:5:\"enrol\";s:6:\"manual\";}"
+}

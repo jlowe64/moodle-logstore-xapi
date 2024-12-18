@@ -1,0 +1,15 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "name": "lesson"
+    }
+  ],
+  "lesson": [
+    {
+      "id": 1,
+      "name": "test_lesson",
+      "intro": "test_lesson_intro"
+    }
+  ]
+}

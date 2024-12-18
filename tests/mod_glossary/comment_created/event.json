@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "objecttable": "comments",
+  "other":"a:1:{s:6:\"itemid\";i:1;}",
+  "objectid": 1,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_glossary\\event\\comment_created"
+}

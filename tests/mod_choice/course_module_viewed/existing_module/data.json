@@ -1,36 +1,34 @@
 {
-    "user": [
-        {
-            "id": 1,
-            "firstname": "test_fullname",
-            "email": "test@test.com"
-        }
-    ],
-    "course": [
-        {
-            "id": 1,
-            "fullname": "test_name",
-            "lang": "en"
-        }
-    ],
-    "course_modules": [
-        {
-            "id": 1,
-            "course": 1,
-            "module": 1,
-            "instance": 1
-        }
-    ],
-    "modules": [
-        {
-            "id": 1,
-            "name": "choice"
-        }
-    ],
-    "choice": [
-        {
-            "id": 1,
-            "name": "test_name"
-        }
-    ]
+  "modules": [
+    {
+      "id": 1,
+      "name": "choice"
+    }
+  ],
+  "choice": [
+    {
+      "id": 1,
+      "name": "To be or not to be?",
+      "intro": "<p>That is the question.</p>"
+    }
+  ],
+  "choice_options": [
+    {
+      "id": 1,
+      "choiceid": 1,
+      "text": "To be"
+    },
+    {
+      "id": 2,
+      "choiceid": 1,
+      "text": "Not to be"
+    }
+  ],
+  "choice_answers": [
+    {
+      "id": 1,
+      "choiceid": 1,
+      "optionid": 1
+    }
+  ]
 }

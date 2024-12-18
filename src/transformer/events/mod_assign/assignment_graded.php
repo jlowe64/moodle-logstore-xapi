@@ -21,6 +21,7 @@
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -62,6 +63,8 @@ function assignment_graded(array $config, \stdClass $event) {
     $scoreraw = (float) ($grade->grade ?: 0);
     $scoremin = (float) ($gradeitems->grademin ?: 0);
     $scoremax = (float) ($gradeitems->grademax ?: 0);
+    $validscore = ($scoremin <= $scoreraw && $scoreraw <= $scoremax) ? true : false;
+
     $scorepass = (float) ($gradeitems->gradepass ?: null);
 
     $success = false;
@@ -72,28 +75,29 @@ function assignment_graded(array $config, \stdClass $event) {
 
     $statement = [
         'actor' => utils\get_user($config, $user),
-        'verb' => utils\get_verb('scored', $config, $lang),
-        'object' => utils\get_activity\course_assignment($config, $event->contextinstanceid, $assignment->name, $lang),
-        'result' => [
-            'score' => [
-                'raw' => $scoreraw
+        'verb' => [
+            'id' => 'https://w3id.org/xapi/tla/verbs/scored',
+            'display' => [
+                'en' => 'Scored',
             ],
-            'completion' => true,
+        ],
+        'object' => utils\get_activity\assign_submission(
+            $config, $event->contextinstanceid, $lang
+        ),
+        'result' => [
             'success' => $success
         ],
-        'timestamp' => utils\get_event_timestamp($event),
         'context' => [
+            ...utils\get_context_base($config, $event, $lang, $course),
             'instructor' => utils\get_user($config, $instructor),
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course)
-                ],
+                'parent' => utils\context_activities\get_parent(
+                    $config,
+                    $event->contextinstanceid,
+                    true
+                ),
                 'category' => [
-                    utils\get_activity\source($config),
+                    utils\get_activity\site($config),
                 ],
             ],
         ]
@@ -103,17 +107,14 @@ function assignment_graded(array $config, \stdClass $event) {
         $statement['result']['response'] = $gradecomment;
     }
 
-    // Only include min score if raw score is valid for that min.
-    if ($scoreraw >= $scoremin) {
-        $statement['result']['score']['min'] = $scoremin;
-    }
-    // Only include max score if raw score is valid for that max.
-    if ($scoreraw <= $scoremax) {
-        $statement['result']['score']['max'] = $scoremax;
-    }
-    // Calculate scaled score as the distance from zero towards the max (or min for negative scores).
-    if ($scoreraw >= 0) {
-        $statement['result']['score']['scaled'] = $scoreraw / $scoremax;
+    // only write a score if valid
+    if ($validscore) {
+        $statement['result']['score'] = [
+            'raw' => $scoreraw,
+            'min' => $scoremin,
+            'max' => $scoremax,
+            'scaled' => utils\get_scaled_score($scoreraw, $scoremin, $scoremax),
+        ];
     }
 
     return [$statement];

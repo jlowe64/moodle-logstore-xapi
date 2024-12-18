@@ -21,6 +21,7 @@
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -37,33 +38,28 @@ use src\transformer\utils as utils;
  */
 function user_enrolment_created(array $config, \stdClass $event) {
     $repo = $config['repo'];
-    $user = $repo->read_record_by_id('user', $event->relateduserid);
+    $user = $repo->read_record_by_id('user', $event->userid);
+    $cuser = $repo->read_record_by_id('user', $event->relateduserid);
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
 
-    return[[
-        'actor' => utils\get_user($config, $user),
+    return [[
+        'actor' => utils\get_user($config, $cuser),
         'verb' => [
-            'id' => 'http://adlnet.gov/expapi/verbs/registered',
+            'id' => 'https://xapi.edlm/profiles/edlm-lms/concepts/verbs/enrolled',
             'display' => [
-                $lang => 'enrolled to'
+                'en' => 'Enrolled',
             ],
         ],
         'object' => utils\get_activity\course($config, $course),
-        'timestamp' => utils\get_event_timestamp($event),
-        'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
-            'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config)
-                ],
-                'category' => [
-                    utils\get_activity\source($config)
-                ]
-            ],
-        ]
+        'context' => utils\get_enrolment_context(
+            $config,
+            $event,
+            $course,
+            $cuser,
+            $user,
+            $lang
+        ),
     ]];
 
 }

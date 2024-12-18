@@ -1,0 +1,50 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "name": "lesson"
+    }
+  ],
+  "lesson": [
+    {
+      "id": 1,
+      "name": "test_lesson",
+      "intro": "test_lesson_intro"
+    }
+  ],
+  "lesson_pages": [
+    {
+      "id": 1,
+      "lessonid": 1,
+      "qtype": 5,
+      "title": "lesson_question_page_title",
+      "contents": "lesson_question_page_contents"
+    }
+  ],
+  "lesson_answers": [
+    {
+      "id": 1,
+      "pageid": 1,
+      "response": "Apple",
+      "answer": "A",
+      "score": 0
+    },
+    {
+      "id": 2,
+      "pageid": 1,
+      "response": "Banana",
+      "answer": "B",
+      "score": 0
+    }
+  ],
+  "lesson_attempts": [
+    {
+      "lessonid": 1,
+      "pageid": 1,
+      "userid": 1,
+      "correct": 1,
+      "useranswer": "Apple,Banana",
+      "timeseen": "1731972680"
+    }
+  ]
+}

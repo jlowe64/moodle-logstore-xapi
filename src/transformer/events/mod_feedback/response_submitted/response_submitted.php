@@ -33,9 +33,10 @@ use src\transformer\utils as utils;
  *
  * @param array $config The transformer config settings.
  * @param \stdClass $event The event to be transformed.
+ * @param array $actor The xAPI Actor to use.
  * @return array
  */
-function response_submitted(array $config, \stdClass $event) {
+function response_submitted(array $config, \stdClass $event, array $actor) {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->userid);
     $course = $repo->read_record_by_id('course', $event->courseid);
@@ -44,27 +45,26 @@ function response_submitted(array $config, \stdClass $event) {
     $feedback = $repo->read_record_by_id('feedback', $feedbackcompleted->feedback);
 
     return [[
-        'actor' => utils\get_user($config, $user),
+        'actor' => $actor,
         'verb' => [
             'id' => 'http://activitystrea.ms/schema/1.0/submit',
             'display' => [
-                $lang => 'submitted'
+                'en' => 'Submitted'
             ],
         ],
-        'object' => utils\get_activity\course_feedback($config, $course, $event->contextinstanceid),
-        'timestamp' => utils\get_event_timestamp($event),
+        'object' => utils\get_activity\course_module(
+            $config, $course, $event->contextinstanceid
+        ),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course),
-                ],
+                'parent' => utils\context_activities\get_parent(
+                    $config,
+                    $event->contextinstanceid
+                ),
                 'category' => [
-                    utils\get_activity\source($config),
-                ]
+                    utils\get_activity\site($config),
+                ],
             ],
         ],
     ]];

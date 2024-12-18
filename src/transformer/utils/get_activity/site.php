@@ -41,6 +41,7 @@ function site(array $config) {
     $sitelang = utils\get_course_lang($site);
 
     return [
+        ...base(),
         'id' => $config['app_url'],
         'definition' => [
             'type' => 'http://id.tincanapi.com/activitytype/lms',

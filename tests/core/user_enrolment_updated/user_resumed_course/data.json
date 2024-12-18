@@ -1,0 +1,20 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "firstname": "test_fullname1",
+      "email": "test@test.com"
+    },
+    {
+      "id": 2,
+      "firstname": "test_fullname2",
+      "email": "test@test.com"
+    }
+  ],
+  "user_enrolments": [
+    {
+      "id": 1,
+      "status": 0
+    }
+  ]
+}

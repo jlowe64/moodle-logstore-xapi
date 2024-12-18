@@ -1,0 +1,22 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "name": "glossary"
+    }
+  ],
+  "glossary": [
+    {
+      "id": 1,
+      "name": "test_glossary_name"
+    }
+  ],
+  "glossary_entries": [
+    {
+      "id": 1,
+      "concept": "test_glossary_entry_name",
+      "glossaryid": 1,
+      "definition": "test_glossary_entry_description"
+    }
+  ]
+}

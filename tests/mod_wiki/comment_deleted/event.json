@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_wiki\\event\\comment_deleted",
+  "objectid": 1,
+  "objecttable": "comments",
+  "other": "a:1:{s:6:\"itemid\";s:1:\"1\";}"
+}

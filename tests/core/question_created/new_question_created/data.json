@@ -1,0 +1,24 @@
+{
+  "question": [
+    {
+      "id": 1,
+      "qtype": "truefalse",
+      "name": "True or False?",
+      "questiontext": "<p>Is the sky blue?</p>"
+    }
+  ],
+  "question_answers": [
+    {
+      "id": 1,
+      "fraction": 1.0,
+      "answer": "True",
+      "question": 1
+    },
+    {
+      "id": 2,
+      "fraction": 0.0,
+      "answer": "False",
+      "question": 1
+    }
+  ]
+}

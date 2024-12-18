@@ -264,10 +264,12 @@ class store extends php_obj implements log_writer {
             'transformer' => [
                 'source_lang' => 'en',
                 'send_mbox' => $this->get_config('mbox', false),
+                'send_name' => $this->get_config('send_name', true),
                 'send_response_choices' => $this->get_config('sendresponsechoices', false),
                 'send_short_course_id' => $this->get_config('shortcourseid', false),
                 'send_course_and_module_idnumber' => $this->get_config('sendidnumber', false),
                 'send_username' => $this->get_config('send_username', false),
+                'account_homepage' => $this->get_config('account_homepage', $CFG->wwwroot),
                 'send_jisc_data' => $this->get_config('send_jisc_data', false),
                 'session_id' => sesskey(),
                 'plugin_url' => 'https://github.com/xAPI-vle/moodle-logstore_xapi',

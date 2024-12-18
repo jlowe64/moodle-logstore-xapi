@@ -1,0 +1,25 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "firstname": "sender",
+      "lastname": "senderson",
+      "email": "sender@example.com",
+      "username": "sender"
+    },
+    {
+      "id": 2,
+      "firstname": "receiver",
+      "lastname": "receiverson",
+      "email": "receiver@example.com",
+      "username": "receiver"
+    }
+  ],
+  "messages": [
+    {
+      "id": 1,
+      "fullmessage": "hi there!(messagetext)",
+      "subject": "hi there(subject)"
+    }
+  ]
+}

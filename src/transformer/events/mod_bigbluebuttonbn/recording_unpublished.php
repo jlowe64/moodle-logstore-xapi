@@ -32,5 +32,5 @@ namespace src\transformer\events\mod_bigbluebuttonbn;
  * @return array
  */
 function recording_unpublished(array $config, \stdClass $event) {
-    return create_statement( $config, $event, 'http://activitystrea.ms/schema/1.0/retract', 'retracted' );
+    return create_statement( $config, $event, 'http://activitystrea.ms/schema/1.0/retract', 'Retracted' );
 }

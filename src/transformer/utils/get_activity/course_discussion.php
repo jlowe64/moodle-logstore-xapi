@@ -42,6 +42,7 @@ function course_discussion(array $config, \stdClass $course, \stdClass $discussi
     $discussionname = property_exists($discussion, 'name') ? $discussion->name : 'Discussion';
 
     return [
+        ...base(),
         'id' => $discussionurl,
         'definition' => [
             'type' => 'http://id.tincanapi.com/activitytype/discussion',

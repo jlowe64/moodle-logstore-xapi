@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "objecttable": "lesson_pages",
+  "other": "a:2:{s:8:\"lessonid\";s:1:\"1\";s:9:\"attemptid\";i:1;}",
+  "objectid": 1,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_lesson\\event\\essay_assessed"
+}

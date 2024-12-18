@@ -1,0 +1,63 @@
+[
+  {
+    "actor": {
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      },
+      "name": "test_fullname"
+    },
+    "verb": {
+      "id": "https://w3id.org/xapi/acrossx/verbs/edited",
+      "display": {
+        "en": "Edited"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/course/completion.php?id=1",
+      "objectType": "Activity",
+      "definition": {
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/course-completion-criteria",
+        "name": {
+          "en": "test_name Completion Criteria"
+        }
+      }
+    },
+    "context": {
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development",
+          "event_name": "\\core\\event\\course_completion_updated",
+          "event_function": "\\src\\transformer\\events\\core\\course_completion_updated"
+        }
+      },
+      "contextActivities": {
+        "parent": [
+          {
+            "id": "http://www.example.org/course/view.php?id=1",
+            "definition": {
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ],
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "definition": {
+              "type": "http://id.tincanapi.com/activitytype/lms",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ]
+      }
+    }
+  }
+]

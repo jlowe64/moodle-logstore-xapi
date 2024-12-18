@@ -34,9 +34,10 @@ abstract class Repository extends PhpObj {
      *
      * @param string $type The name of the table to retrieve from.
      * @param array $query Any additional conditions to add to the query.
+     * @param string $sort Sort string for how to order the data.
      * @return array
      */
-    abstract public function read_records(string $type, array $query);
+    abstract public function read_records(string $type, array $query, string $sort = '');
 
     /**
      * Reads an object from the store with the given type and query.

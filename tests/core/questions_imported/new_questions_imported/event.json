@@ -1,0 +1,10 @@
+{
+  "courseid": 1,
+  "eventname": "\\core\\event\\questions_imported",
+  "id": 1,
+  "objectid": 1,
+  "objecttable": null,
+  "timecreated": 1433946701,
+  "userid": 1,
+  "other": "a:2:{s:6:\"format\";s:3:\"xml\";s:10:\"categoryid\";s:2:\"10\";}"
+}

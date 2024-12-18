@@ -1,0 +1,10 @@
+{
+  "courseid": 1,
+  "eventname": "\\mod_assign\\event\\feedback_viewed",
+  "id": 1,
+  "objectid": 1,
+  "objecttable": "assign_grades",
+  "timecreated": 1433946701,
+  "userid": 1,
+  "contextinstanceid": 1
+}

@@ -1,0 +1,53 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "firstname": "test_instructor_fullname",
+      "email": "instructor@test.com"
+    },
+    {
+      "id": 2,
+      "firstname": "test_learner_fullname",
+      "email": "learner@test.com"
+    }
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "name": "quiz"
+    }
+  ],
+  "quiz_attempts": [
+    {
+      "id": 1,
+      "quiz": 1,
+      "sumgrades": 50,
+      "state": "finished",
+      "timefinish": 1,
+      "timestart": 0,
+      "userid": 2
+    }
+  ],
+  "quiz": [
+    {
+      "id": 1,
+      "name": "test_quiz_name"
+    }
+  ],
+  "question_attempts": [
+    {
+      "id": 1,
+      "questionusageid": 1,
+      "minfraction": 0.0,
+      "maxfraction": 1.0
+    }
+  ],
+  "question_attempt_steps": [
+    {
+      "id": 1,
+      "questionattemptid": 1,
+      "fraction": 0.5,
+      "sequencenumber": 1
+    }
+  ]
+}

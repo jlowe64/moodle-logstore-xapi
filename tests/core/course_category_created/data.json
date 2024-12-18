@@ -1,0 +1,29 @@
+{
+  "course": [
+    {
+      "id": 1,
+      "fullname": "test_name",
+      "lang": "en"
+    }
+  ],
+  "user": [
+    {
+      "id": 1,
+      "firstname": "test_fullname",
+      "email": "test@test.com"
+    }
+  ],
+  "course_categories": [
+    {
+      "id": 2,
+      "name": "Base Category",
+      "description": "Default Moodle Course Category"
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "name": "Sub Category",
+      "description": "Moodle Course Sub-Category"
+    }
+  ]
+}

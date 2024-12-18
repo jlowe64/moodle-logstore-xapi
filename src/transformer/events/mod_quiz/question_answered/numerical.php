@@ -27,6 +27,7 @@
 namespace src\transformer\events\mod_quiz\question_answered;
 
 use src\transformer\utils as utils;
+use src\transformer\utils\get_activity\definition\question as question;
 
 /**
  * Transformer for quiz question (numerical) answered event.
@@ -45,47 +46,48 @@ function numerical(array $config, \stdClass $event, \stdClass $questionattempt, 
     $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
+    [
+        'min' => $min,
+        'max' => $max,
+    ] = utils\quiz_question\get_numerical_answer($config, $question->id);
+    $numanswer = $questionattempt->responsesummary;
 
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [
             'id' => 'http://adlnet.gov/expapi/verbs/answered',
             'display' => [
-                $lang => 'answered'
+                'en' => 'Answered'
             ],
         ],
         'object' => [
+            ...utils\get_activity\base(),
             'id' => utils\get_quiz_question_id($config, $coursemodule->id, $question->id),
-            'definition' => [
-                'type' => 'http://adlnet.gov/expapi/activities/cmi.interaction',
-                'name' => [
-                    $lang => utils\get_string_html_removed($question->questiontext)
-                ],
-                'interactionType' => 'numeric',
-            ]
+            'definition' => question\get_numerical_definition($config, $question, $lang)
         ],
-        'timestamp' => utils\get_event_timestamp($event),
         'result' => [
             'response' => $questionattempt->responsesummary,
             'completion' => $questionattempt->responsesummary !== '',
-            'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
+            'success' => ($min <= $numanswer && $numanswer <= $max),
             'extensions' => [
                 'http://learninglocker.net/xapi/cmi/numeric/response' => floatval($questionattempt->responsesummary),
             ],
         ],
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course),
-                    utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
-                    utils\get_activity\quiz_attempt($config, $attempt->id, $coursemodule->id),
-                ],
+                'parent' => array_merge(
+                    [
+                        utils\get_activity\quiz_attempt($config, $attempt->id, $coursemodule->id),
+                    ],
+                    utils\context_activities\get_parent(
+                        $config,
+                        $event->contextinstanceid,
+                        true
+                    ),
+                ),
                 'category' => [
-                    utils\get_activity\source($config),
+                    utils\get_activity\site($config),
                 ]
             ],
         ]

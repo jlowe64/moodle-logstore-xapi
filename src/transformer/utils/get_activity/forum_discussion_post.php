@@ -40,6 +40,7 @@ function forum_discussion_post(array $config, $discussionid, \stdClass $post) {
     $posturl = $config['app_url'].'/mod/forum/discuss.php?d='.$discussionid.'#p'.$post->id;
 
     return [
+        ...base(),
         'id' => $posturl,
         'definition' => [
             'type' => 'http://id.tincanapi.com/activitytype/forum-reply',

@@ -1,12 +1,12 @@
 {
-    "name": "xapi-vle/moodle-logstore-xapi",
-    "license": "GPL v3",
-    "require-dev": {
-        "learninglocker/statementfactory": "~0.0"
-    },
-    "require": {
-        "ext-json": "*"
-    },
-    "prefer-stable": true,
-    "minimum-stability": "dev"
+  "name": "xapi-vle/moodle-logstore-xapi",
+  "license": "GPL v3",
+  "require-dev": {
+    "yetanalytics/statementfactory": "v0.0.12"
+  },
+  "require": {
+    "ext-json": "*"
+  },
+  "prefer-stable": true,
+  "minimum-stability": "dev"
 }

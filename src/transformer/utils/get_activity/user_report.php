@@ -40,6 +40,7 @@ use src\transformer\utils as utils;
 function user_report(array $config, \stdClass $user, \stdClass $course, string $courselang) {
 
     $activity = [
+        ...base(),
         'definition' => [
             'type' => 'http://id.tincanapi.com/activitytype/user-profile',
             'name' => [

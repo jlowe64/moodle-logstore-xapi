@@ -1,0 +1,54 @@
+[
+  {
+    "actor": {
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      },
+      "name": "test_fullname"
+    },
+    "verb": {
+      "id": "https://w3id.org/xapi/acrossx/verbs/searched",
+      "display": {
+        "en": "Searched"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/search/index.php",
+      "objectType": "Activity",
+      "definition": {
+        "type": "https://w3id.org/xapi/acrossx/activities/webpage",
+        "name": {
+          "en": "Global Search"
+        }
+      }
+    },
+    "result": {
+      "response": "query"
+    },
+    "context": {
+      "contextActivities": {
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "definition": {
+              "type": "http://id.tincanapi.com/activitytype/lms",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ]
+      },
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "event_function": "\\src\\transformer\\events\\core\\search_results_viewed",
+          "event_name": "\\core\\event\\search_results_viewed",
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development"
+        }
+      }
+    }
+  }
+]

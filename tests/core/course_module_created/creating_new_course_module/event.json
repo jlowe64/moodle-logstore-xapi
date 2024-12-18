@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "objecttable": "course_modules",
+  "timecreated": 1433946701,
+  "objectid": 1,
+  "courseid": 1,
+  "eventname": "\\core\\event\\course_module_created",
+  "userid": 1,
+  "contextinstanceid": 1
+}

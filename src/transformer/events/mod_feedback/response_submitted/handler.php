@@ -38,14 +38,26 @@ use src\transformer\events\mod_feedback\item_answered as item_answered;
  */
 function handler(array $config, \stdClass $event) {
     $repo = $config['repo'];
+    $user = $repo->read_record_by_id('user', $event->userid);
     $feedbackvalues = $repo->read_records('feedback_value', [
         'completed' => $event->objectid
     ]);
+    $feedbackcompleted = $repo->read_record_by_id('feedback_completed', $event->objectid);
+    $isanon = ($feedbackcompleted->anonymous_response === 1) ? true : false;
+    $actor = ($isanon)
+        ? [
+            'name' => 'Anonymous Course Participant',
+            'account' => [
+                'homePage' => $config['app_url'],
+                'name' => 'anonymous'
+            ]
+        ]
+    : utils\get_user($config, $user);
 
     return array_merge(
-        response_submitted($config, $event),
-        array_reduce($feedbackvalues, function ($result, $feedbackvalue) use ($config, $event) {
-            return array_merge($result, item_answered\handler($config, $event, $feedbackvalue));
+        response_submitted($config, $event, $actor),
+        array_reduce($feedbackvalues, function ($result, $feedbackvalue) use ($config, $event, $actor) {
+            return array_merge($result, item_answered\handler($config, $event, $feedbackvalue, $actor));
         }, [])
     );
 }

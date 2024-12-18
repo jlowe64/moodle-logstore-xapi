@@ -40,14 +40,15 @@ function course(array $config, \stdClass $course) {
     $courselang = utils\get_course_lang($course);
 
     $object = [
-                  'id' => $config['app_url'].'/course/view.php?id='.$course->id,
-                  'definition' => [
-                      'type' => 'http://id.tincanapi.com/activitytype/lms/course',
-                      'name' => [
-                          $courselang => $coursename,
-                      ],
-                  ],
-              ];
+        ...base(),
+        'id' => $config['app_url'].'/course/view.php?id='.$course->id,
+        'definition' => [
+            'type' => 'https://w3id.org/xapi/cmi5/activitytype/course',
+            'name' => [
+                $courselang => $coursename,
+            ],
+        ],
+    ];
 
     if (utils\is_enabled_config($config, 'send_short_course_id')) {
         $lmsshortid = 'https://w3id.org/learning-analytics/learning-management-system/short-id';

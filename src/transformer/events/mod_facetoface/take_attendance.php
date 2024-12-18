@@ -58,33 +58,29 @@ function take_attendance(array $config, \stdClass $event) {
                     'verb' => [
                         'id' => 'http://adlnet.gov/expapi/verbs/attended',
                         'display' => [
-                            $lang => 'attended'
+                            'en' => 'Attended'
                         ],
                     ],
                     'object' => utils\get_activity\course_module(
                         $config,
                         $course,
-                        $event->contextinstanceid,
-                        'https://w3id.org/xapi/acrossx/activities/face-to-face-discussion'
+                        $event->contextinstanceid
                     ),
-                    'timestamp' => utils\get_event_timestamp($event),
                     'result' => [
                         'duration' => "PT".(string) $sessionduration."S",
                         'completion' => $currentstatus->statuscode === 100,
                     ],
                     'context' => [
-                        'platform' => $config['source_name'],
-                        'language' => $lang,
+                        ...utils\get_context_base($config, $event, $lang, $course),
                         'instructor' => utils\get_user($config, $user),
-                        'extensions' => utils\extensions\base($config, $event, $course),
                         'contextActivities' => [
-                            'grouping' => [
-                                utils\get_activity\site($config),
-                                utils\get_activity\course($config, $course),
-                            ],
+                            'parent' => utils\context_activities\get_parent(
+                                $config,
+                                $event->contextinstanceid
+                            ),
                             'category' => [
-                                utils\get_activity\source($config)
-                            ]
+                                utils\get_activity\site($config),
+                            ],
                         ],
                     ],
                 ];

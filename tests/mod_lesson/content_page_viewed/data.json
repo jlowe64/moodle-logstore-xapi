@@ -1,0 +1,22 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "name": "lesson"
+    }
+  ],
+  "lesson": [
+    {
+      "id": 1,
+      "name": "test_lesson",
+      "intro": "test_lesson_intro"
+    }
+  ],
+  "lesson_pages": [
+    {
+      "id": 1,
+      "lessonid": 1,
+      "title": "lesson_content_page_title"
+    }
+  ]
+}

@@ -41,31 +41,21 @@ function attempt_viewed(array $config, \stdClass $event) {
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
 
-    $object = utils\get_activity\quiz_attempt($config, $event->id, $event->contextinstanceid);
-
-    // JISC specific activity type.
-    if (utils\is_enabled_config($config, 'send_jisc_data')) {
-        $object = utils\get_activity\course_quiz($config, $course, $event->contextinstanceid);
-    }
-
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => utils\get_verb('viewed', $config, $lang),
-        'object' => $object,
-        'timestamp' => utils\get_event_timestamp($event),
+        'object' => utils\get_activity\quiz_attempt($config, $event->id, $event->contextinstanceid),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course),
-                    utils\get_activity\course_quiz($config, $course, $event->contextinstanceid),
-                ],
+                'parent' => utils\context_activities\get_parent(
+                    $config,
+                    $event->contextinstanceid,
+                    true
+                ),
                 'category' => [
-                    utils\get_activity\source($config),
-                ]
+                    utils\get_activity\site($config),
+                ],
             ],
         ]
     ]];

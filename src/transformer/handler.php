@@ -21,10 +21,13 @@
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
  *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
  *            David Pesce <david.pesce@exputo.com>
+ *            Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace src\transformer;
+
+use src\transformer\utils as utils;
 
 /**
  * Generic handler for the transformer.
@@ -34,6 +37,7 @@ namespace src\transformer;
  * @return array
  */
 function handler(array $config, array $events) {
+
     $eventfunctionmap = get_event_function_map();
     $transformedevents = array_map(function ($event) use ($config, $eventfunctionmap) {
         $eventobj = (object) $event;
@@ -45,7 +49,11 @@ function handler(array $config, array $events) {
                 $eventconfig = array_merge([
                     'event_function' => $eventfunction,
                 ], $config);
-                $eventstatements = $eventfunction($eventconfig, $eventobj);
+                $eventstatements = utils\apply_statement_defaults(
+                    $eventconfig,
+                    $eventobj,
+                    $eventfunction($eventconfig, $eventobj)
+                );
             } else {
                 $eventstatements = [];
             }
@@ -59,7 +67,8 @@ function handler(array $config, array $events) {
             return $transformedevent;
         } catch (\Exception $e) {
             $logerror = $config['log_error'];
-            $errormessage = "Failed transform for event id #" . $eventobj->id . ": " .  $e->getMessage();
+            $id=property_exists($eventobj,'id') ? $eventobj->id : ' (id not present on event object) ';
+            $errormessage = "Failed transform for event id #" . $id . ": " .  $e->getMessage();
             $logerror($errormessage);
             $logerror($e->getTraceAsString());
             $eventobj->response = json_encode(['transfromerror' => $errormessage]);

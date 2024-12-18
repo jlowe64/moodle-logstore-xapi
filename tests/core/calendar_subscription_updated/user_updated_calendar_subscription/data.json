@@ -1,0 +1,9 @@
+{
+  "event_subscriptions": [
+    {
+      "id": 1,
+      "name": "example calendar subscription",
+      "url": "http://example-cal.com/HASH"
+    }
+  ]
+}

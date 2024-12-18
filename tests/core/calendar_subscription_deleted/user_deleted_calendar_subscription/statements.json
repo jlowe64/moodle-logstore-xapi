@@ -1,0 +1,61 @@
+[
+  {
+    "actor": {
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      },
+      "name": "test_fullname"
+    },
+    "verb": {
+      "id": "http://activitystrea.ms/delete",
+      "display": {
+        "en": "Deleted"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/calendar/subscription?id=1",
+      "definition": {
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/calendar-subscription"
+      },
+      "objectType": "Activity"
+    },
+    "context": {
+      "contextActivities": {
+        "category": [
+          {
+            "definition": {
+              "name": {
+                "en": "test_name"
+              },
+              "type": "http://id.tincanapi.com/activitytype/lms"
+            },
+            "id": "http://www.example.org",
+            "objectType": "Activity"
+          }
+        ],
+        "parent": [
+          {
+            "definition": {
+              "name": {
+                "en": "test_name"
+              },
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course"
+            },
+            "id": "http://www.example.org/course/view.php?id=1",
+            "objectType": "Activity"
+          }
+        ]
+      },
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "event_function": "\\src\\transformer\\events\\core\\calendar_subscription_deleted",
+          "event_name": "\\core\\event\\calendar_subscription_deleted",
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development"
+        }
+      },
+      "language": "en"
+    }
+  }
+]

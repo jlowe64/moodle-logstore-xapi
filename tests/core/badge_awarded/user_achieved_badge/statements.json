@@ -1,0 +1,85 @@
+[
+  {
+    "actor": {
+      "name": "test_recipient_firstname test_recipient_lastname",
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      }
+    },
+    "verb": {
+      "id": "https://w3id.org/xapi/tla/verbs/achieved",
+      "display": {
+        "en": "Achieved"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/badges/overview.php?id=1",
+      "definition": {
+        "name": {
+          "en": "test_badgename"
+        },
+        "description": {
+          "en": "test badge description"
+        },
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/badge",
+        "extensions": {
+          "https://xapi.edlm/profiles/edlm-lms/v1/concepts/activity-extensions/badge-type": "Course",
+          "https://xapi.edlm/profiles/edlm-lms/v1/concepts/activity-extensions/badge-version": "1.0"
+        }
+      },
+      "objectType": "Activity"
+    },
+    "result": {
+      "response": "you got the test badge!"
+    },
+    "context": {
+      "language": "en",
+      "instructor": {
+        "name": "test_awarder_firstname test_awarder_lastname",
+        "account": {
+          "homePage": "http://www.example.org",
+          "name": "2"
+        }
+      },
+      "contextActivities": {
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "objectType": "Activity",
+            "definition": {
+              "name": {
+                "en": "EDLM Moodle LMS"
+              },
+              "type": "http://id.tincanapi.com/activitytype/lms"
+            }
+          }
+        ],
+        "parent": [
+          {
+            "id": "http://www.example.org/course/view.php?id=1",
+            "objectType": "Activity",
+            "definition": {
+              "name": {
+                "en": "test_course_name"
+              },
+              "description": {
+                "en": "test_course_summary"
+              },
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course"
+            }
+          }
+        ]
+      },
+      "extensions": {
+        "https://xapi.edlm/profiles/edlm-lms/v1/concepts/context-extensions/badge-assignment-method": "Manual",
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development",
+          "event_name": "\\core\\event\\badge_awarded",
+          "event_function": "\\src\\transformer\\events\\core\\badge_awarded"
+        }
+      }
+    }
+  }
+]

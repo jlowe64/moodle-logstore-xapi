@@ -1,0 +1,9 @@
+{
+   "courseid" : 1,
+   "eventname" : "\\core\\event\\badge_viewed",
+   "id" : 1,
+   "objectid" : 1,
+   "objecttable" : "badge",
+   "timecreated" : 1433946701,
+   "userid" : 1
+}

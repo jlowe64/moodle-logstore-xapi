@@ -1,0 +1,24 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "name": "book"
+    }
+  ],
+  "book": [
+    {
+      "id": 1,
+      "name": "test_name"
+    }
+  ],
+  "book_chapters": [
+    {
+      "id": 1,
+      "bookid": "1",
+      "pagenum": "1",
+      "subchapter": "0",
+      "title": "test_book_chapter_title",
+      "content": "<p>test_book_chapter_content</p>"
+    }
+  ]
+}

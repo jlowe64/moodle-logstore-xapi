@@ -1,0 +1,67 @@
+[
+  {
+    "actor": {
+      "name": "test_recipient_firstname test_recipient_lastname",
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "2"
+      }
+    },
+    "verb": {
+      "id": "https://w3id.org/xapi/tla/verbs/forfeited",
+      "display": {
+        "en": "Forfeited"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/badges/overview.php?id=1",
+      "definition": {
+        "name": {
+          "en": "test_badgename"
+        },
+        "description": {
+          "en": "test badge description"
+        },
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/badge",
+        "extensions": {
+          "https://xapi.edlm/profiles/edlm-lms/v1/concepts/activity-extensions/badge-type": "Global",
+          "https://xapi.edlm/profiles/edlm-lms/v1/concepts/activity-extensions/badge-version": "1.0"
+        }
+      },
+      "objectType": "Activity"
+    },
+    "context": {
+      "language": "en",
+      "instructor": {
+        "name": "test_revoker_firstname test_revoker_lastname",
+        "account": {
+          "homePage": "http://www.example.org",
+          "name": "1"
+        }
+      },
+      "contextActivities": {
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "objectType": "Activity",
+            "definition": {
+              "name": {
+                "en": "EDLM Moodle LMS"
+              },
+              "type": "http://id.tincanapi.com/activitytype/lms"
+            }
+          }
+        ]
+      },
+      "extensions": {
+        "https://xapi.edlm/profiles/edlm-lms/v1/concepts/context-extensions/badge-assignment-method": "Manual",
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development",
+          "event_name": "\\core\\event\\badge_revoked",
+          "event_function": "\\src\\transformer\\events\\core\\badge_revoked"
+        }
+      }
+    }
+  }
+]

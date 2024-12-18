@@ -1,0 +1,23 @@
+{
+  "post": [
+    {
+      "id": 1,
+      "subject": "a note title",
+      "content": "contents of a note"
+    }
+  ],
+  "user": [
+    {
+      "email": "editor@test.com",
+      "firstname": "note_editor_firstname",
+      "id": 1,
+      "lastname": "note_editor_lastname"
+    },
+    {
+      "email": "editor@test.com",
+      "firstname": "note_subject_firstname",
+      "id": 2,
+      "lastname": "note_subject_lastname"
+    }
+  ]
+}

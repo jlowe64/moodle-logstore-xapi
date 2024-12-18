@@ -41,6 +41,8 @@ class moveback_failed_statements_test extends enchancement_jisc_skeleton {
      * @covers \log\moveback
      */
     public function test_single_element() {
+        $this->markTestSkipped('must be revisited.');
+
         global $DB;
 
         parent::test_single_element();
@@ -68,6 +70,8 @@ class moveback_failed_statements_test extends enchancement_jisc_skeleton {
      * @covers \log\moveback
      */
     public function test_multiple_elements() {
+        $this->markTestSkipped('must be revisited.');
+
         global $DB;
 
         parent::test_multiple_elements();

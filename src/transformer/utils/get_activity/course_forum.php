@@ -40,7 +40,6 @@ function course_forum(array $config, \stdClass $course, string $cmid) {
     return utils\get_activity\course_module(
         $config,
         $course,
-        $cmid,
-        'http://id.tincanapi.com/activitytype/forum-topic'
+        $cmid
     );
 }

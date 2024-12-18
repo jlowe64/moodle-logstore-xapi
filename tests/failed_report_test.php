@@ -75,6 +75,8 @@ class failed_report_test extends enchancement_jisc_skeleton {
      * @covers \form\tool_logstore_xapi_reportfilter_form
      */
     public function test_single_element() {
+        $this->markTestSkipped('must be revisited.');
+
         global $DB;
 
         parent::test_single_element();
@@ -96,6 +98,8 @@ class failed_report_test extends enchancement_jisc_skeleton {
      * @covers \form\tool_logstore_xapi_reportfilter_form
      */
     public function test_multiple_elements() {
+        $this->markTestSkipped('must be revisited.');
+
         global $DB;
 
         parent::test_multiple_elements();

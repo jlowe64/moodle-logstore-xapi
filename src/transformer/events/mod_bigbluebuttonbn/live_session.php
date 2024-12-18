@@ -32,5 +32,5 @@ namespace src\transformer\events\mod_bigbluebuttonbn;
  * @return array
  */
 function live_session(array $config, \stdClass $event) {
-    return create_statement( $config, $event, 'http://id.tincanapi.com/verb/live', 'live' );
+    return create_statement( $config, $event, 'http://id.tincanapi.com/verb/live', 'Live' );
 }

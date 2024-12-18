@@ -57,6 +57,7 @@ function book_chapter(array $config, \stdClass $course, \stdClass $chapter, stri
     }
 
     return [
+        ...base(),
         'id' => $url,
         'definition' => $definition
     ];

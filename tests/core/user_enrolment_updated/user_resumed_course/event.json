@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "userid": 1,
+  "relateduserid": 2,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "objecttable": "user_enrolments",
+  "objectid": 1,
+  "eventname": "\\core\\event\\user_enrolment_updated",
+  "other": "a:1:{s:5:\"enrol\";s:6:\"manual\";}"
+}

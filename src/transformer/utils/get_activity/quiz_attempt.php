@@ -32,19 +32,23 @@ use src\transformer\utils as utils;
  * Transformer utility for retrieving (quiz attempt) activities.
  *
  * @param array $config The transformer config settings.
- * @param string $attemptid The id of the attempt.
+ * @param int $attemptid The id of the attempt.
  * @param string $cmid The id of the context.
  * @return array
  */
-function quiz_attempt(array $config, string $attemptid, string $cmid) {
+function quiz_attempt(array $config, int $attemptid, string $cmid) {
     $lang = $config['source_lang'];
+    $repo = $config['repo'];
+    $attempt = $repo->read_record_by_id('quiz_attempts', $attemptid);
+    $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
 
     return [
+        ...base(),
         'id' => $config['app_url'].'/mod/quiz/attempt.php?attempt='.$attemptid.'&cmid='.$cmid,
         'definition' => [
             'type' => 'http://adlnet.gov/expapi/activities/attempt',
             'name' => [
-                $lang => 'Attempt',
+                $lang => $quiz->name . ' Attempt ' . $attemptid,
             ],
         ],
     ];

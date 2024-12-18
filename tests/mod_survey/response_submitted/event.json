@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_survey\\event\\response_submitted",
+  "objectid": null,
+  "contextinstanceid": 1,
+  "objecttable": null,
+  "other": "a:1:{s:8:\"surveyid\";s:1:\"1\";}"
+}

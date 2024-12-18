@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_survey\\event\\report_viewed",
+  "objectid": 1,
+  "contextinstanceid": 1,
+  "objecttable": "survey",
+  "other": "a:2:{s:6:\"action\";s:7:\"summary\";s:7:\"groupid\";i:0;}"
+}

@@ -34,23 +34,24 @@ use src\transformer\utils as utils;
  * @param array $config The transformer config settings.
  * @param \stdClass $event The event to be transformed.
  * @param \stdClass $feedbackvalue The value of the feedback type.
+ * @param array $actor The xAPI actor.
  * @return array
  */
-function handler(array $config, \stdClass $event, \stdClass $feedbackvalue) {
+function handler(array $config, \stdClass $event, \stdClass $feedbackvalue, array $actor) {
     $repo = $config['repo'];
     $feedbackitem = $repo->read_record_by_id('feedback_item', $feedbackvalue->item);
 
     switch ($feedbackitem->typ) {
         case 'multichoicerated':
-            return multichoicerated($config, $event, $feedbackvalue, $feedbackitem);
+            return multichoicerated($config, $event, $feedbackvalue, $feedbackitem, $actor);
         case 'multichoice':
-            return multichoice($config, $event, $feedbackvalue, $feedbackitem);
+            return multichoice($config, $event, $feedbackvalue, $feedbackitem, $actor);
         case 'numeric':
-            return numerical($config, $event, $feedbackvalue, $feedbackitem);
+            return numerical($config, $event, $feedbackvalue, $feedbackitem, $actor);
         case 'textarea':
-            return textarea($config, $event, $feedbackvalue, $feedbackitem);
+            return textarea($config, $event, $feedbackvalue, $feedbackitem, $actor);
         case 'textfield':
-            return textfield($config, $event, $feedbackvalue, $feedbackitem);
+            return textfield($config, $event, $feedbackvalue, $feedbackitem, $actor);
         default:
             return [];
     }

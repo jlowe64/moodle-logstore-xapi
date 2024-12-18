@@ -32,5 +32,5 @@ namespace src\transformer\events\mod_bigbluebuttonbn;
  * @return array
  */
 function meeting_ended(array $config, \stdClass $event) {
-    return create_statement( $config, $event, 'http://id.tincanapi.com/verb/adjourned', 'adjourned' );
+    return create_statement( $config, $event, 'http://id.tincanapi.com/verb/adjourned', 'Adjourned' );
 }

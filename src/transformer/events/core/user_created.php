@@ -45,18 +45,15 @@ function user_created(array $config, \stdClass $event) {
         'verb' => [
             'id' => 'http://adlnet.gov/expapi/verbs/registered',
             'display' => [
-                $lang => 'registered to'
+                'en' => 'Registered'
             ],
         ],
         'object' => utils\get_activity\site($config),
-        'timestamp' => utils\get_event_timestamp($event),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, null),
+            ...utils\get_context_base($config, $event, $lang),
             'contextActivities' => [
                 'category' => [
-                    utils\get_activity\source($config)
+                    utils\get_activity\site($config)
                 ]
             ],
         ]

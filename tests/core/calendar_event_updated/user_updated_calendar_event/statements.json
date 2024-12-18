@@ -1,0 +1,63 @@
+[
+  {
+    "actor": {
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      },
+      "name": "event_updater_firstname event_updater_lastname"
+    },
+    "context": {
+      "contextActivities": {
+        "category": [
+          {
+            "definition": {
+              "name": {
+                "en": "test_course_name"
+              },
+              "type": "http://id.tincanapi.com/activitytype/lms"
+            },
+            "id": "http://www.example.org",
+            "objectType": "Activity"
+          }
+        ],
+        "parent": [
+          {
+            "definition": {
+              "name": {
+                "en": "test_course_name"
+              },
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course"
+            },
+            "id": "http://www.example.org/course/view.php?id=1",
+            "objectType": "Activity"
+          }
+        ]
+      },
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "event_function": "\\src\\transformer\\events\\core\\calendar_event_updated",
+          "event_name": "\\core\\event\\calendar_event_updated",
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development"
+        }
+      }
+    },
+    "object": {
+      "definition": {
+        "name": {
+          "en": "test event"
+        },
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/calendar-event"
+      },
+      "id": "http://www.example.org/calendar/view.php?id=1",
+      "objectType": "Activity"
+    },
+    "verb": {
+      "display": {
+        "en": "Edited"
+      },
+      "id": "https://w3id.org/xapi/acrossx/verbs/edited"
+    }
+  }
+]

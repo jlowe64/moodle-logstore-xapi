@@ -34,6 +34,7 @@ namespace src\transformer\utils\get_activity;
  */
 function source(array $config) {
     return [
+        ...base(),
         'id' => $config['source_url'],
         'definition' => [
             'type' => 'http://id.tincanapi.com/activitytype/source',

@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "objecttable": "quiz",
+  "objectid": 1,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_quiz\\event\\question_manually_graded",
+  "relateduserid": null,
+  "other": "a:3:{s:6:\"quizid\";s:1:\"1\";s:9:\"attemptid\";s:1:\"1\";s:4:\"slot\";i:1;}"
+}

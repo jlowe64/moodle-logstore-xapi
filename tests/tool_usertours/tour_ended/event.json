@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "userid": 1,
+  "timecreated": 1433946701,
+  "courseid": 1,
+  "contextinstanceid": 1,
+  "eventname": "\\tool_usertours\\event\\tour_ended",
+  "other": "a:3:{s:7:\"pageurl\";s:42:\"http://localhost:8000/course/view.php?id=1\";s:6:\"stepid\";i:7;s:9:\"stepindex\";i:2;}"
+}

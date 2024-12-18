@@ -1,0 +1,74 @@
+[
+  {
+    "actor": {
+      "name": "test_fullname",
+      "account": {
+        "homePage": "http://www.example.org",
+        "name": "1"
+      }
+    },
+    "verb": {
+      "id": "https://xapi.edlm/profiles/edlm-lms/concepts/verbs/subscribed",
+      "display": {
+        "en": "Subscribed"
+      }
+    },
+    "object": {
+      "id": "http://www.example.org/mod/forum/view.php?id=1",
+      "definition": {
+        "type": "https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/forum",
+        "name": {
+          "en": "test_forum_name"
+        }
+      },
+      "objectType": "Activity"
+    },
+    "context": {
+      "language": "en",
+      "extensions": {
+        "http://lrs.learninglocker.net/define/extensions/info": {
+          "http://moodle.org": "1.0.0",
+          "https://github.com/xAPI-vle/moodle-logstore_xapi": "0.0.0-development",
+          "event_name": "\\mod_forum\\event\\subscription_created",
+          "event_function": "\\src\\transformer\\events\\mod_forum\\subscription_created"
+        }
+      },
+      "contextActivities": {
+        "parent": [
+          {
+            "id": "http://www.example.org/course/section.php?id=1",
+            "objectType": "Activity",
+            "definition": {
+              "name": {
+                "en": "test_name Section 0"
+              },
+              "type": "http://id.tincanapi.com/activitytype/section"
+            }
+          },
+          {
+            "id": "http://www.example.org/course/view.php?id=1",
+            "definition": {
+              "type": "https://w3id.org/xapi/cmi5/activitytype/course",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ],
+        "category": [
+          {
+            "id": "http://www.example.org",
+            "definition": {
+              "type": "http://id.tincanapi.com/activitytype/lms",
+              "name": {
+                "en": "test_name"
+              }
+            },
+            "objectType": "Activity"
+          }
+        ]
+      }
+    }
+  }
+]

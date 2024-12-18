@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "userid": 1,
+  "courseid": 1,
+  "timecreated": 1433946701,
+  "objecttable": "forum",
+  "objectid": 1,
+  "contextinstanceid": 1,
+  "other": "a:2:{s:10:\"discussion\";i:1;s:7:\"forumid\";i:1;}",
+  "eventname": "\\mod_forum\\event\\discussion_subscription_deleted"
+}

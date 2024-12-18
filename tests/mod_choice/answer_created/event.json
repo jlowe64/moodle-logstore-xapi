@@ -1,0 +1,10 @@
+{
+  "courseid": 1,
+  "contextinstanceid": 1,
+  "eventname": "\\mod_choice\\event\\answer_created",
+  "id": 1,
+  "objectid": 1,
+  "objecttable": "choice_answers",
+  "timecreated": 1433946701,
+  "userid": 1
+}
